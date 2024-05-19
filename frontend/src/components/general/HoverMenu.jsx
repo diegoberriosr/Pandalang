@@ -3,12 +3,11 @@ import { useState } from 'react';
 const HoverMenu = ({children, hoverMenu}) => {
 
   const [isHovered, setIsHovered] = useState(false);
-
   return (
     <div className='md:relative flex md:flex-col items-center'>
       <div className='flex items-start md:hover:bg-slate-200 rounded-xl px-4 py-2.5' 
-      onMouseEnter={() => setIsHovered(true)} 
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => { if(window.innerHeight > 768) setIsHovered(true)}} 
+      onMouseLeave={() => { if(window.innerHeight > 768) setIsHovered(false)}}
       onClick={() => setIsHovered(!isHovered)}>
         {children}
       </div>
