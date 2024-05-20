@@ -12,8 +12,10 @@ const button = cva(BASELINE_STYLE, {
     variant: {
       default : 'border-2 border-slate-200 hover:bg-slate-100 text-slate-500',
       transparent : 'border border-slate-300 hover:bg-slate-100 text-sky-400',
+      loginTransparent : 'border border-slate-600 hover:bg-slate-950/90 text-sky-400',
       noOutline : 'border-none hover:bg-slate-100 text-sky-400',
       primary : 'border bg-sky-400 border-sky-600 hover:bg-sky-400/90 text-slate-100', // Blue
+      loginPrimary : 'border bg-sky-400 border-sky-600 hover:bg-sky-400/90 text-slate-800',
       secondary : 'border bg-green-500 border-green-700 hover:bg-green-500/90 text-slate-100', // Green
       tertiary : 'border bg-fuchsia-500 border-fuchsia-700 hover:bg-fuchsia-500/90 text-slate-100', // Purple
       yellow : 'border bg-yellow-400 border-yellow-600 hover:bg-yellow-400/90 text-slate-100', // Yellow

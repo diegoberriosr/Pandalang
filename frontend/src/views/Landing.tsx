@@ -14,6 +14,8 @@ import Mandarin from '../assets/languages/mandarin.png';
 
 // Component imports
 import { Button } from '../components/general/ButtonCVA.tsx'
+import Login from './Login.tsx';
+import Register from './Register.tsx';
 
 type Languages = {
     title : string,
@@ -44,9 +46,12 @@ const Landing = () => {
 
   return (
     <>
+      <Login isVisible={loginModal} handleVisibility={setLoginModal}/>
+      <Register isVisible={registerModal} handleVisibility={setRegisterModal}/>
       <header className='w-screen h-16 flex items-center justify-center md:justify-between lg:justify-between md:px-[5%] lg:px-[18%] pt-3'>
         <h1 className='text-2xl font-bold'>Pandalang</h1>
-        <Button variant='secondary' className='w-36 hidden md:block lg:hidden'>
+        <Button variant='secondary' className='w-36 hidden md:block lg:hidden'
+        onClick={() => setLoginModal(true)}>
             Start
         </Button>
       </header>
@@ -55,8 +60,10 @@ const Landing = () => {
         <Logo/>
         <div className='flex flex-col items-center'>
             <h2 className='text-3xl text-slate-700 font-bold w-7/12 text-center'>Learn, practice, and master new languages with Pandalang!</h2>
-            <Button variant='secondary' size='info' className='mt-10 w-80'>Start learning</Button>
-            <Button variant='transparent' size='info' className='mt-5 w-80'>I already have an account</Button>
+            <Button variant='secondary' size='info' className='mt-10 w-80'
+            onClick={() => setLoginModal(true)}>Start learning</Button>
+            <Button variant='transparent' size='info' className='mt-5 w-80'
+            onClick={() => setRegisterModal(true)}>I already have an account</Button>
         </div>
       </main>
       <footer className='w-screen h-20 border-t-2 border-slate-300 md:px-[5%] lg:px-[18%] py-2.5 hidden lg:block'>
