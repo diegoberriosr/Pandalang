@@ -17,7 +17,7 @@ import Mandarin from '../../assets/languages/mandarin.png';
 import HoverMenu from './HoverMenu.tsx';
 
 // Context imports
-import { AuthContext } from '../../context/AuthContext';
+import { AuthContext } from '../../context/AuthContext.tsx';
 
 const LANGUAGE_FLAGS = { // A list of language flags in .png format
     'english' : English,

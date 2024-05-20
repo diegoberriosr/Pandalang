@@ -5,7 +5,7 @@ import Mage from '../../assets/elements/mage.png';
 import {Button} from './ButtonCVA.tsx';
 
 // Context imports
-import { AuthContext } from '../../context/AuthContext.js';
+import { AuthContext } from '../../context/AuthContext.tsx';
 
 
 const Info = () => {

@@ -12,7 +12,7 @@ import Quests from './Quests.tsx';
 import Leaderboard from './Leaderboard.tsx';
 
 // Provider imports
-import AuthProvider from '../context/AuthContext';
+import AuthProvider from '../context/AuthContext.tsx';
 
 const Dashboard = () => {
   
