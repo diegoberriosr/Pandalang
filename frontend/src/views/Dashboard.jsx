@@ -1,10 +1,17 @@
 import {Routes, Route} from 'react-router-dom'
 import { useLocation } from 'react-router-dom';
 
-import Sidebar from '../components/general/Sidebar';
-import Bottombar from '../components/general/Bottombar';
-import UserStatus from '../components/general/UserStatus';
+// Component imports
+import Sidebar from '../components/general/Sidebar.tsx';
+import Bottombar from '../components/general/Bottombar.tsx';
+import UserStatus from '../components/general/UserStatus.tsx';
+import Info from '../components/general/Info.tsx';
+import Learn from './Learn.tsx';
+import Shop from './Shop.tsx';
+import Quests from './Quests.tsx';
+import Leaderboard from './Leaderboard.tsx';
 
+// Provider imports
 import AuthProvider from '../context/AuthContext';
 
 const Dashboard = () => {
@@ -15,15 +22,18 @@ const Dashboard = () => {
   
   return (
     <AuthProvider>
-      <div className='flex w-screen md:pr-36'>
+      <div className='flex w-screen xl:pr-36 md:pr-10'>
         <Sidebar currentUrl={currentUrl}/>
           <Routes>
-            <Route path='learn'/>
-            <Route path='practice'/>
-            <Route path='leaderboard'/>
-            <Route path='shop'/>
+            <Route path='learn' element={<Learn/>}/>
+            <Route path='quests' element={<Quests/>}/>
+            <Route path='shop' element={<Shop/>}/>
+            <Route path='leaderboard' element={<Leaderboard/>}/>
           </Routes>
-        <UserStatus/>
+        <div>
+          <UserStatus/>
+          <Info/>
+        </div>
         <Bottombar currentUrl={currentUrl}/>
       </div>
     </AuthProvider>

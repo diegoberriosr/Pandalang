@@ -1,8 +1,7 @@
-import { useState } from 'react';
-
+import React from "react";
 const HoverMenu = ({children, hoverMenu}) => {
 
-  const [isHovered, setIsHovered] = useState(false); // Keep track of pop-up menu visibility
+  const [isHovered, setIsHovered] = React.useState(false); // Keep track of pop-up menu visibility
 
   return (
     <div className='md:relative flex md:flex-col items-center'>

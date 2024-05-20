@@ -1,5 +1,6 @@
+import React from 'react';
 import URLS from '../../constants.js';
-import NavbarLink from "./NavbarLink.jsx";
+import NavbarLink from "./NavbarLink.tsx";
 
 const Sidebar = ({ currentUrl }) => {
   
@@ -9,7 +10,7 @@ const Sidebar = ({ currentUrl }) => {
       <h4 className='hidden lg:block ml-3 text-2xl font-bold tracking-wide text-slate-800'>Pandalang</h4>
       <nav className='mt-8'>
         <ul>
-          { URLS.map( url => <NavbarLink element={url} currentUrl={currentUrl} displayText/>)}
+          { URLS.map( url => <NavbarLink key={url.name} element={url} currentUrl={currentUrl} displayText/>)}
         </ul>
       </nav>
     </aside>

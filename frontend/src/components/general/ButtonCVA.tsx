@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 const BASELINE_STYLE = 'inline-flex items-center justify-center whitespace-nowrap rounded-xl \
 text-sm font-bold ring-offset-background transition-colors focus-visilbe:outline-none focus-visible:ring-2 \
 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 uppercase tracking-wide \
-border-b-[4px] hover:border-b-[3.75px] active:border-b-0 transition-all duration-50' // 3D effect and clicking animation
+border-b-[4px] hover:border-b-[3.75px] active:border-b-0 transition-all duration-500' // 3D effect and clicking animation
 
 const button = cva(BASELINE_STYLE, {
   variants: {
