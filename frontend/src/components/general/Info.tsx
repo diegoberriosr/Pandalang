@@ -18,7 +18,7 @@ const Info = () => {
             <img src={Mage} alt='mage' className='absolute top-4 right-6 w-20 h-20'/>
             <h4 className='text-slate-700 font-bold text-lg'>Become a Language Sage</h4>
             <p className='w-9/12 mt-2 text-md text-slate-500 font-semibold'>No ads, unlimited courses, and unlimited hearts!</p>
-            <Button variant='primary' size='lg' className='w-full mt-6'>
+            <Button variant='indigo' size='info' className='w-full mt-6'>
                 Unlock Sage Mode
             </Button>
         </article>

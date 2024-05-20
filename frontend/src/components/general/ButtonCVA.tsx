@@ -15,13 +15,15 @@ const button = cva(BASELINE_STYLE, {
       secondary : 'border bg-green-500 border-green-700 hover:bg-green-500/90 text-slate-100', // Green
       tertiary : 'border bg-fuchsia-500 border-fuchsia-700 hover:bg-fuchsia-500/90 text-slate-100', // Purple
       yellow : 'border bg-yellow-400 border-yellow-600 hover:bg-yellow-400/90 text-slate-100', // Yellow
-      red : 'border bg-red-600 border-red-800 hover:bg-red-600/90 text-slate-100'
+      red : 'border bg-red-600 border-red-800 hover:bg-red-600/90 text-slate-100',
+      indigo : 'border bg-indigo-600 border-indigo-800 hover:bg-indigo-600/90 text-slate-100'
     },
     size: {
       default : "h-11 px-4 py-2",
       sm: "h-9 px-3",
       lg : "h-12 px-8",
       icon : "h-10 w-10" ,
+      info: 'pb-4 pt-2 h-12',
       rouded : "rounded-full"
     }
   },

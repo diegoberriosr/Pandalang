@@ -2,7 +2,9 @@ import React from 'react';
 
 // UI Icon imports
 import Heart from '../../assets/elements/heart.png';
+import BlueHeart from '../../assets/elements/blue_heart.png';
 import Thunder from '../../assets/elements/thunder.png';
+import BlueInfinity from '../../assets/elements/infinity_blue.png';
 
 // Language flag icon imports
 import English from '../../assets/languages/english.png';
@@ -47,9 +49,14 @@ const UserStatus = () => {
       </HoverMenu>
       <HoverMenu hoverMenu={undefined}>
         <figure className='w-8 h-8 md:w-6 md:h-6'>
-            <img src={Heart} alt='heart icon' className='w-full-h-full'/>
+            <img src={ user.isPremium ? BlueHeart : Heart} alt='heart icon' className='w-full-h-full'/>
         </figure>
-        <span className='text-lg md:text-sm text-red-500 ml-2.5 font-bold'>{user.hearts}</span>
+        <span className={`text-lg md:text-sm ${ user.isPremium ? 'text-indigo-600' : 'text-red-500'} ml-2.5 font-bold`}>
+            { user.isPremium ? 
+            <img src={BlueInfinity} alt='infinity' className='w-5 h-5'/>
+            : 
+            user.hearts}
+          </span>
       </HoverMenu>
     </div>
   )
