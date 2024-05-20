@@ -2,18 +2,18 @@
 import React from 'react';
 
 // Icon imports
-import ShopImg from '../assets/elements/shop.png';
-import Heart from '../assets/elements/heart.png';
-import BlueHeart from '../assets/elements/blue_heart.png';
-import Thunder from '../assets/elements/thunder.png';
+import ShopImg from '../../assets/elements/shop.png';
+import Heart from '../../assets/elements/heart.png';
+import BlueHeart from '../../assets/elements/blue_heart.png';
+import Thunder from '../../assets/elements/thunder.png';
 
 // Component imports
-import { Button } from '../components/general/ButtonCVA.tsx';
-import GeneralView from './GeneralView.tsx';
-import ViewListElement from './ViewListElement.tsx';
+import { Button } from '../general/ButtonCVA.tsx';
+import GeneralView from '../../views/GeneralView.tsx';
+import ViewListElement from '../../views/ViewListElement.tsx';
 
 // Context imports
-import { AuthContext } from '../context/AuthContext.tsx';
+import { AuthContext } from '../../context/AuthContext.tsx';
 
 const Shop = () => {
   const { user, setUser } = React.useContext(AuthContext); // Call the Authcontext to dinamically display/modify user data

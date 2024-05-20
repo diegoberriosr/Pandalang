@@ -27,7 +27,7 @@ const Info = () => {
 
 
   return (
-    <div className='mt-10 w-[375px] hidden md:block'>
+    <div className='mt-10 w-[375px] hidden md:block z-10'>
         { !user.isPremiunm && // If user is not a premium member, promote it
         <article className='relative w-full border-2 border-slate-200 rounded-xl px-4 py-3'>
             <img src={Mage} alt='mage' className='absolute top-4 right-6 w-20 h-20'/>

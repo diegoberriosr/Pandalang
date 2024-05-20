@@ -1,12 +1,12 @@
 import React from "react"
 
 // Icon imports
-import Medal from '../assets/elements/medal.png';
-import Thunder from '../assets/elements/thunder.png';
+import Medal from '../../assets/elements/medal.png';
+import Thunder from '../../assets/elements/thunder.png';
 
 // Component imports
-import GeneralView from './GeneralView.tsx';
-import ViewListElement from './ViewListElement.tsx';
+import GeneralView from '../../views/GeneralView.tsx';
+import ViewListElement from '../../views/ViewListElement.tsx';
 
 type Quest = {
   title : string,

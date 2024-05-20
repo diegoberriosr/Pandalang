@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 
-import Trophy from '../assets/elements/trophy.png';
-import GeneralView from './GeneralView.tsx';
-import ViewListElement from './ViewListElement.tsx';
-import {Button} from '../components/general/ButtonCVA.tsx';
+import Trophy from '../../assets/elements/trophy.png';
+import GeneralView from '../../views/GeneralView.tsx';
+import ViewListElement from '../../views/ViewListElement.tsx';
+import {Button} from '../general/ButtonCVA.tsx';
 
 type LeaderboardUser = {
     username : string,
@@ -51,6 +51,8 @@ const Leaderboard = () => {
   
   const [profiles, setProfiles] = useState<[LeaderboardUser]>(TEST_WEEK_USERS); // List ranking users by earned xp.
   const [weeklyFilter, setWeeklyFilter] = useState<boolean>(true); // Set a filter for weekly and global rankings (default is weekly).
+  
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState<boolean>(false); // Indicates if information is being fetched (loading state).
 
   useEffect( () => {

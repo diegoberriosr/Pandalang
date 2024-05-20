@@ -6,10 +6,10 @@ import Sidebar from '../components/general/Sidebar.tsx';
 import Bottombar from '../components/general/Bottombar.tsx';
 import UserStatus from '../components/general/UserStatus.tsx';
 import Info from '../components/general/Info.tsx';
-import Learn from './Learn.tsx';
-import Shop from './Shop.tsx';
-import Quests from './Quests.tsx';
-import Leaderboard from './Leaderboard.tsx';
+import Learn from '../components/learn/Learn.tsx';
+import Shop from '../components/shop/Shop.tsx';
+import Quests from '../components/quests/Quests.tsx';
+import Leaderboard from '../components/leaderboard/Leaderboard.tsx';
 
 // Provider imports
 import AuthProvider from '../context/AuthContext.tsx';
