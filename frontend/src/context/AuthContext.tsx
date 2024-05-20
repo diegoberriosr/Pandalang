@@ -4,6 +4,7 @@ type User = {
     username : string,
     active_course : string,
     hearts : number,
+    xp : number,
     available_xp : number,
     isPremium : boolean
 }
@@ -17,6 +18,7 @@ const TEST_USER : User = { // Temporary test user
     "username" : "Paco",
     "active_course" : "russian",
     "hearts" : 3,
+    "xp" : 100,
     "available_xp" : 100,
     'isPremium' : false // Indicates wether user is a premium member or not
 };

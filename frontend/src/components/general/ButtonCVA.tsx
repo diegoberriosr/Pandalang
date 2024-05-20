@@ -11,6 +11,7 @@ const button = cva(BASELINE_STYLE, {
   variants: {
     variant: {
       default : 'border-2 border-slate-200 hover:bg-slate-100 text-slate-500',
+      noOutline : 'border-none hover:bg-slate-100 text-sky-400',
       primary : 'border bg-sky-400 border-sky-600 hover:bg-sky-400/90 text-slate-100', // Blue
       secondary : 'border bg-green-500 border-green-700 hover:bg-green-500/90 text-slate-100', // Green
       tertiary : 'border bg-fuchsia-500 border-fuchsia-700 hover:bg-fuchsia-500/90 text-slate-100', // Purple
