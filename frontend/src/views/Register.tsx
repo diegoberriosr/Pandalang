@@ -5,7 +5,7 @@ const Register = ({ isVisible, handleVisibility }) => {
 
   return (
     <div className='absolute w-screen h-screen inset-0 bg-slate-800 text-white z-50'>
-      <button onClick={() => handleVisibility(false)}>Fucking nigger forevermirin trying to shit talk me</button>
+      <button onClick={() => handleVisibility(false)}>Close</button>
     </div>
   )
 }

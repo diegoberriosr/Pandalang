@@ -46,8 +46,8 @@ const Landing = () => {
 
   return (
     <>
-      <Login isVisible={loginModal} handleVisibility={setLoginModal}/>
-      <Register isVisible={registerModal} handleVisibility={setRegisterModal}/>
+      { loginModal && <Login handleVisibility={setLoginModal} handleRegisterVisibily={setRegisterModal}/>}
+      { registerModal && <Register isVisible={registerModal} handleVisibility={setRegisterModal}/>}
       <header className='w-screen h-16 flex items-center justify-center md:justify-between lg:justify-between md:px-[5%] lg:px-[18%] pt-3'>
         <h1 className='text-2xl font-bold'>Pandalang</h1>
         <Button variant='secondary' className='w-36 hidden md:block lg:hidden'
