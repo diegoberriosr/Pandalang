@@ -3,6 +3,7 @@ import React, { useState, createContext, SetStateAction, Dispatch, ReactNode} fr
 type User = {
     username : string,
     active_course : string,
+    enrolled_courses : number[],
     hearts : number,
     xp : number,
     available_xp : number,
@@ -17,6 +18,7 @@ type AuthContextType = {
 const TEST_USER : User = { // Temporary test user
     "username" : "Paco",
     "active_course" : "russian",
+    "enrolled_courses" : [],
     "hearts" : 3,
     "xp" : 100,
     "available_xp" : 100,

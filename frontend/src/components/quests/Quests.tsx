@@ -1,4 +1,5 @@
-import React from "react"
+import React from 'react';
+
 
 // Icon imports
 import Medal from '../../assets/elements/medal.png';
@@ -23,6 +24,7 @@ const TEST_QUESTS : [Quest] = [
 ];
 
 const Quests = () => {
+
   return (
     <GeneralView header='Quests' subheader='Complete quests by earning xp' icon={Medal}>
       <ul className='w-screen md:w-8/12'>

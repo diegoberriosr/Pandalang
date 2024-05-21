@@ -2,8 +2,6 @@ import React, { useState } from 'react'
 
 // Icon imports
 import Earth from '../assets/elements/earth.png';
-import Moon from '../assets/elements/moon.png';
-import Sun from '../assets/elements/sun.png';
 
 // Language flag icon imports
 import English from '../assets/languages/english.png';
