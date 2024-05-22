@@ -8,6 +8,7 @@ import ExerciseWithoutHelp from '../components/practice/ExerciseWithoutHelp.tsx'
 import OutOfHearts from '../components/practice/OutOfHearts.tsx';
 import QuitPractice from '../components/practice/QuitPractice.jsx';
 import PracticeLesson from '../components/practice/PracticeLesson.tsx';
+import LessonCompleted from '../components/practice/LessonCompleted.tsx';
 
 // Context imports
 import { AuthContext } from '../context/AuthContext.tsx';
@@ -81,6 +82,9 @@ const Practice = ({ practice }) => {
 
   return (
     <>
+    <Modal isVisible={exercises.length === 0 && !loading}>
+      <LessonCompleted attempts={attempts} correctAnswers={correctAnswers}/>
+    </Modal>
     { !loading &&
       <Modal isVisible={practiceLessonModal}>
         <PracticeLesson setPracticeLessonModal={setPracticeLessonModal}/>
@@ -94,10 +98,8 @@ const Practice = ({ practice }) => {
     </Modal>
     <PracticeHeader practice={false} progress={progress} setQuitModal={setQuitModal}/>
     <main className='mt-20 w-screen flex-1 flex flex-col items-center justify-center px-2.5 md:px-5 lg:px-10'>
-      { exercises.length > 0 && !loading ?
+      { exercises.length > 0 && !loading &&
         <ExerciseWithoutHelp exercise={exercises[0]} setSelected={setSelected}/>
-        :
-        <span>Finished lesson</span>
       }
     </main>
     <PracticeFooter practice={false} selected={selected} exercises={exercises} setExercises={setExercises} setCorrectAnswers={setCorrectAnswers} setAttempts={setAttempts}/>
