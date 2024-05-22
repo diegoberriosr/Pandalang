@@ -4,7 +4,7 @@ import React, { useState, useContext, useEffect } from 'react'
 import PracticeHeader from '../components/practice/PracticeHeader.tsx';
 import PracticeFooter from '../components/practice/PracticeFooter.tsx';
 import Modal from '../components/practice/Modal.tsx';
-import ExerciseWithHelp from '../components/practice/ExerciseWithHelp.tsx';
+import ExerciseWithoutHelp from '../components/practice/ExerciseWithoutHelp.tsx';
 
 // Context imports
 import { AuthContext } from '../context/AuthContext.tsx';
@@ -86,7 +86,7 @@ const Practice = ({ practice }) => {
     <PracticeHeader practice={false} progress={progress}/>
     <main className='mt-20 w-screen flex-1 flex flex-col items-center justify-center px-2.5 md:px-5 lg:px-10'>
       { exercises.length > 0 && !loading ?
-        <ExerciseWithHelp exercise={exercises[0]} setSelected={setSelected}/>
+        <ExerciseWithoutHelp exercise={exercises[0]} setSelected={setSelected}/>
         :
         <span>Finished lesson</span>
       }
