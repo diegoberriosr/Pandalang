@@ -5,6 +5,7 @@ import PracticeHeader from '../components/practice/PracticeHeader.tsx';
 import PracticeFooter from '../components/practice/PracticeFooter.tsx';
 import Modal from '../components/practice/Modal.tsx';
 import ExerciseWithoutHelp from '../components/practice/ExerciseWithoutHelp.tsx';
+import OutOfHearts from '../components/practice/OutOfHearts.tsx';
 
 // Context imports
 import { AuthContext } from '../context/AuthContext.tsx';
@@ -78,7 +79,7 @@ const Practice = ({ practice }) => {
   return (
     <>
     <Modal isVisible={user.hearts === 0}>
-        'Ran out of hearts' modal will go here
+        <OutOfHearts/>
     </Modal>
     <Modal isVisible={quitModal}>
         Exit confirmation modal

@@ -10,7 +10,7 @@ const PracticeFooter = ({ selected, exercises, setExercises, setAttempts, setCor
   
   const[state, setState] = useState<string>('waiting'); // Keeps track of footer state( waiting for submission, correct submission, and wrong submission);
   const { setUser } = useContext(AuthContext);
-  
+
   const handleSubmitAnswers = () => {
     // Check if the answer was correct
     if (selected.id === exercises[0].answer.id) {
@@ -44,7 +44,7 @@ const PracticeFooter = ({ selected, exercises, setExercises, setAttempts, setCor
 
   return (
     <footer className={`${state === 'correct' ? 'bg-green-500/90' : ''} ${state === 'incorrect' ? 'bg-red-400/90' : ''} 
-    fixed bottom-0 w-screen flex flex-row-reverse items-center justify-between h-24 border-t-2 border-slate-200 px-40`}>
+    fixed bottom-0 w-screen flex flex-row-reverse items-center justify-between h-24 border-t-2 border-slate-200 px-2.5 sm:px-10 md:px-20 lg:px-40`}>
         { state === 'waiting' ?
             <Button disabled={ selected === undefined } variant='secondary' onClick={handleSubmitAnswers}> 
                 Check
@@ -55,7 +55,7 @@ const PracticeFooter = ({ selected, exercises, setExercises, setAttempts, setCor
             </Button>
         }
         { state !== 'waiting' &&
-            <span className={`text-2xl font-bold ${state === 'correct' ? 'text-green-800' : 'text-red-800'}`}>
+            <span className={`text-lg sm:text-2xl font-bold ${state === 'correct' ? 'text-green-800' : 'text-red-800'}`}>
                 {state === 'correct' ? 'Great job! :)' : 'Try it again :('}
             </span>
         }
