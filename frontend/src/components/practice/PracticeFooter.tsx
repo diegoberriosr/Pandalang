@@ -6,10 +6,10 @@ import { Button } from '../general/ButtonCVA.tsx';
 // Context imports
 import { AuthContext } from '../../context/AuthContext.tsx';
 
-const PracticeFooter = ({ selected, exercises, setExercises, setAttempts, setCorrectAnswers }) => {
+const PracticeFooter = ({ practice, selected, exercises, setExercises, setAttempts, setCorrectAnswers }) => {
   
   const[state, setState] = useState<string>('waiting'); // Keeps track of footer state( waiting for submission, correct submission, and wrong submission);
-  const { setUser } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
 
   const handleSubmitAnswers = () => {
     // Check if the answer was correct
@@ -22,7 +22,7 @@ const PracticeFooter = ({ selected, exercises, setExercises, setAttempts, setCor
     
     // Process incorrect answers
     setState('incorrect'); // Update footer status to incorrect.
-    setUser( prevStatus => ({...prevStatus, hearts : prevStatus.hearts - 1})); // Substract one heart per failed attempt.
+    if (!practice && !user.isPremium) setUser( prevStatus => ({...prevStatus, hearts : prevStatus.hearts - 1})); // Substract one heart per failed attempt (only when it is a regular lesson, not a practice lesson, and when user is not premium).
     setAttempts(prevState => prevState + 1); // Increase the number of attempts by one.
   };
 

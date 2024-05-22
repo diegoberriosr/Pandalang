@@ -7,6 +7,7 @@ import Modal from '../components/practice/Modal.tsx';
 import ExerciseWithoutHelp from '../components/practice/ExerciseWithoutHelp.tsx';
 import OutOfHearts from '../components/practice/OutOfHearts.tsx';
 import QuitPractice from '../components/practice/QuitPractice.jsx';
+import PracticeLesson from '../components/practice/PracticeLesson.tsx';
 
 // Context imports
 import { AuthContext } from '../context/AuthContext.tsx';
@@ -68,7 +69,8 @@ const Practice = ({ practice }) => {
   const [correctAnswers, setCorrectAnswers] = useState<number>(0); // Keeps track of correct answers (used to calculate lesson accuracy in the future) 
   const [attempts, setAttempts] = useState<number>(0); // Keeps track of total attempts (also used to calculate lesson accuracy).
   const [quitModal, setQuitModal] = useState<boolean>(false); // Used for displaying the exit confirmation modal.
-
+  const [practiceLessonModal, setPracticeLessonModal] = useState<boolean>( practice ? true : false); // Used to display a modal when starting a practice lesson.
+  
   const { user } = useContext(AuthContext);
   useEffect( () => {
     if(!loading){
@@ -79,6 +81,11 @@ const Practice = ({ practice }) => {
 
   return (
     <>
+    { !loading &&
+      <Modal isVisible={practiceLessonModal}>
+        <PracticeLesson setPracticeLessonModal={setPracticeLessonModal}/>
+      </Modal>
+    }
     <Modal isVisible={user.hearts === 0}>
         <OutOfHearts/>
     </Modal>
@@ -93,7 +100,7 @@ const Practice = ({ practice }) => {
         <span>Finished lesson</span>
       }
     </main>
-    <PracticeFooter selected={selected} exercises={exercises} setExercises={setExercises} setCorrectAnswers={setCorrectAnswers} setAttempts={setAttempts}/>
+    <PracticeFooter practice={false} selected={selected} exercises={exercises} setExercises={setExercises} setCorrectAnswers={setCorrectAnswers} setAttempts={setAttempts}/>
     </>
   )
 }
