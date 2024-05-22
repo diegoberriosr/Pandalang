@@ -13,6 +13,8 @@ const button = cva(BASELINE_STYLE, {
       default : 'border-2 border-slate-200 hover:bg-slate-100 text-slate-500',
       transparent : 'border border-slate-300 hover:bg-slate-100 text-sky-400',
       course : 'border slate-300 hover:bg-slate-100 text-slate-800',
+      correct : 'border bg-green-400 border-green-600 hover:bg-green-400/90 text-slate-100',
+      incorrect : 'border bg-red-400 border-red-600 hover:bg-red-400/90 text-slate-100',
       loginTransparent : 'border border-slate-600 hover:bg-slate-950/90 text-sky-400',
       noOutline : 'border-none hover:bg-slate-100 text-sky-400',
       primary : 'border bg-sky-400 border-sky-600 hover:bg-sky-400/90 text-slate-100', // Blue
