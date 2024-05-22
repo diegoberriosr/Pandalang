@@ -2,7 +2,6 @@ import React, { useContext } from 'react'
 import BrokenHeart from '../../assets/elements/broken_heart.png';
 
 import { Button } from '../general/ButtonCVA.tsx';
-
 import {AuthContext} from '../../context/AuthContext.tsx';
 
 const OutOfHearts = () => {

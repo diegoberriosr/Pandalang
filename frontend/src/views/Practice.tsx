@@ -6,6 +6,7 @@ import PracticeFooter from '../components/practice/PracticeFooter.tsx';
 import Modal from '../components/practice/Modal.tsx';
 import ExerciseWithoutHelp from '../components/practice/ExerciseWithoutHelp.tsx';
 import OutOfHearts from '../components/practice/OutOfHearts.tsx';
+import QuitPractice from '../components/practice/QuitPractice.jsx';
 
 // Context imports
 import { AuthContext } from '../context/AuthContext.tsx';
@@ -82,9 +83,9 @@ const Practice = ({ practice }) => {
         <OutOfHearts/>
     </Modal>
     <Modal isVisible={quitModal}>
-        Exit confirmation modal
+        <QuitPractice setQuitModal={setQuitModal}/>
     </Modal>
-    <PracticeHeader practice={false} progress={progress}/>
+    <PracticeHeader practice={false} progress={progress} setQuitModal={setQuitModal}/>
     <main className='mt-20 w-screen flex-1 flex flex-col items-center justify-center px-2.5 md:px-5 lg:px-10'>
       { exercises.length > 0 && !loading ?
         <ExerciseWithoutHelp exercise={exercises[0]} setSelected={setSelected}/>
