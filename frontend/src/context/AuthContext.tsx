@@ -18,7 +18,7 @@ type AuthContextType = {
 const TEST_USER : User = { // Temporary test user
     "username" : "Paco",
     "active_course" : "russian",
-    "enrolled_courses" : [],
+    "enrolled_courses" : [1],
     "hearts" : 5,
     "xp" : 100,
     "available_xp" : 100,

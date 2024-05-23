@@ -3,8 +3,6 @@ import React from 'react'
 // Component imports
 import { Button } from '../general/ButtonCVA.tsx';
 
-import Panda from '../../assets/elements/panda.png';
-
 const ExerciseWithHelp = ({ exercise, state, selected, setSelected }) => {
   return (
     <>

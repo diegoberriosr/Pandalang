@@ -7,6 +7,7 @@ import Thunder from '../../assets/elements/thunder.png';
 // Component imports
 import {Button} from './ButtonCVA.tsx';
 import { Link } from 'react-router-dom';
+import ProgressBar from '../general/ProgressBar.tsx';
 
 // Context imports
 import { AuthContext } from '../../context/AuthContext.tsx';
@@ -16,7 +17,7 @@ type Quest = {
   xp : number
 }
 
-const TEST_QUESTS : [Quest] = [
+const TEST_QUESTS : Quest[] = [
   { title : 'Earn 10 xp', xp : 10},
   { title : 'Earn 100 xp', xp : 100},
   { title : 'Earn 1000 xp', xp : 1000},
@@ -53,7 +54,7 @@ const Info = () => {
                   <img src={Thunder} alt='thunder' className='w-8 h-8'/>
                   <div className='w-full'>
                     <h4 className='text-base text-slate-800 font-bold'>{quest.title}</h4>
-                    <progress max={quest.xp} value={user.xp} className='w-full'/>
+                    <ProgressBar width='w-full' percentage={user.xp > quest.xp ? 100 : Math.ceil((user.xp / quest.xp) * 100)}/>
                   </div>
                 </li>
               )}

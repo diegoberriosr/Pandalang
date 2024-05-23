@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 
 // Icon imports
@@ -8,13 +8,17 @@ import Thunder from '../../assets/elements/thunder.png';
 // Component imports
 import GeneralView from '../../views/GeneralView.tsx';
 import ViewListElement from '../../views/ViewListElement.tsx';
+import ProgressBar from '../general/ProgressBar.tsx';
+
+// Context imports
+import { AuthContext } from '../../context/AuthContext.tsx';
 
 type Quest = {
   title : string,
   xp : number
 }
 
-const TEST_QUESTS : [Quest] = [
+const TEST_QUESTS : Quest[] = [
   { title : 'Earn 10 xp', xp : 10},
   { title : 'Earn 100 xp', xp : 100},
   { title : 'Earn 1000 xp', xp : 1000},
@@ -25,6 +29,8 @@ const TEST_QUESTS : [Quest] = [
 
 const Quests = () => {
 
+  const { user } = useContext(AuthContext);
+
   return (
     <GeneralView header='Quests' subheader='Complete quests by earning xp' icon={Medal}>
       <ul className='w-screen md:w-8/12'>
@@ -33,7 +39,7 @@ const Quests = () => {
             <img src={Thunder} alt='thunder' className='w-8 h-8'/>
             <div className= 'w-full'>
               <h4 className='text-lg text-slate-800 font-bold'>{quest.title}</h4>
-              <progress max={quest.xp}  value={10} className='w-full bg-slate-200 rounded'/>
+              <ProgressBar width='w-full' percentage={ user.xp > quest.xp ? 100 : Math.ceil((user.xp/quest.xp) * 100)}/>
             </div>
           </div>
         </ViewListElement>)}

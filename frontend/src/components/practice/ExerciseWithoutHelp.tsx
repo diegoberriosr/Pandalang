@@ -13,7 +13,8 @@ const ExerciseWithoutHelp = ({ exercise, state, selected, setSelected}) => {
        <h3 className='text-2xl text-slate-800 font-bold'>Select the correct meaning</h3>
        <figure className='mt-5 w-full flex items-center space-x-3.5'>
             <img src={Panda} alt='red panda' className='w-20 h-20'/>
-            <div className='px-3.5 py-2.5 border-2 border-gray-300 rounded-xl'>
+            <div className='relative px-3.5 py-2.5 border-2 border-gray-300 rounded-xl'>
+                <div className='absolute -left-2 top-1/2 border-r-8 border-y-8 border-y-transparent'/>
                 {exercise.answer.translation}
             </div>
        </figure>

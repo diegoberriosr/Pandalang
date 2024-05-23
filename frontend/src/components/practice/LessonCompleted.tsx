@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 // SFX imports
@@ -12,7 +12,6 @@ import Dart from '../../assets/elements/dart.png';
 // Component imports
 import FinishCard from './FinishCard.tsx';
 import { Button } from '../general/ButtonCVA.tsx';
-import ConfettiExplosion from 'react-confetti-explosion';
 
 // Context imports
 import { AuthContext } from '../../context/AuthContext.tsx';
@@ -20,7 +19,6 @@ import { AuthContext } from '../../context/AuthContext.tsx';
 const LessonCompleted = ({ attempts, correctAnswers }) => {
   const { user } = useContext(AuthContext); 
   const [baseXp, setBaseXp] = useState<number>(80); // Amount of base xp granted for completing a lesson without any mistakes.
-  const [showConfetti, setShowConfetti] = useState<boolean>(true);
   const accuracy = correctAnswers/attempts; // Used to compute total xp learned from lesson ( accuracy * base xp).
   const winSFX = new Audio(Win);
   const navigate = useNavigate();
@@ -28,8 +26,7 @@ const LessonCompleted = ({ attempts, correctAnswers }) => {
   winSFX.play();
 
   return (
-    <div className='w-screen h-screen bg-white flex flex-col justify-center items-center text-slate-800 font-bold text-2xl pb-14'>
-      { showConfetti && <ConfettiExplosion width={window.innerWidth} particleCount={800} duration={3000} force={0.8}/>}     
+    <div className='w-screen h-screen bg-white flex flex-col justify-center items-center text-slate-800 font-bold text-2xl pb-14'> 
       <h5 className='text-8xl'>🎊</h5>
       <h5 className='mt-2.5'>Great job!</h5>
       <h5 className='mt-2.5'>You've completed the lesson.</h5>

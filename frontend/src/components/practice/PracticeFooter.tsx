@@ -36,14 +36,13 @@ const PracticeFooter = ({ practice, selected, exercises, setExercises, state, se
   const handleContinue = () => {
     setExercises( prevStatus => {
 
-        // Check if attempt was successful.
-        if ( state === 'correct') return prevStatus.slice(1, prevStatus.length - 1); // Remove question from the array.
+        let updatedStatus = [...prevStatus];
+        const exercise = updatedStatus.shift();
 
-        // If not, alter the exercises array appropriately.
-        let updatedStatus = [...prevStatus]; // Send failed question to the end of the array for further review.
-        if (updatedStatus.length === 1) return updatedStatus;
-        updatedStatus = [...updatedStatus, updatedStatus[0]]
-        return updatedStatus.slice(1, updatedStatus.length - 1); // Remove the same failed question from the top of the array.    
+        if (state === 'correct') return updatedStatus.slice();
+
+        return updatedStatus.concat([exercise]);
+      
       });
 
     setState('waiting') // Wait for a new submission.
