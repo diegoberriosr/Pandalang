@@ -70,9 +70,9 @@ const Practice = ({ practice }) => {
   const [correctAnswers, setCorrectAnswers] = useState<number>(0); // Keeps track of correct answers (used to calculate lesson accuracy in the future) 
   const [attempts, setAttempts] = useState<number>(0); // Keeps track of total attempts (also used to calculate lesson accuracy).
   const [quitModal, setQuitModal] = useState<boolean>(false); // Used for displaying the exit confirmation modal.
-  const [practiceLessonModal, setPracticeLessonModal] = useState<boolean>( practice ? true : false); // Used to display a modal when starting a practice lesson.
-  
+  const [practiceLessonModal, setPracticeLessonModal] = useState<boolean>( practice ? true : false); // Used to display a modal when starting a practice lesson. 
   const { user } = useContext(AuthContext);
+  
   useEffect( () => {
     if(!loading){
         setSelected(undefined);
