@@ -1,15 +1,20 @@
 import React, { useState, useContext } from 'react'
 
+// SFX imports
+import Correct from '../../assets/sounds/correct.wav';
+import Incorrect from '../../assets/sounds/wrong.mp3';
+
 // Component imports
 import { Button } from '../general/ButtonCVA.tsx';
 
 // Context imports
 import { AuthContext } from '../../context/AuthContext.tsx';
 
-const PracticeFooter = ({ practice, selected, exercises, setExercises, setAttempts, setCorrectAnswers }) => {
+const PracticeFooter = ({ practice, selected, exercises, setExercises, state, setState, setAttempts, setCorrectAnswers }) => {
   
-  const[state, setState] = useState<string>('waiting'); // Keeps track of footer state( waiting for submission, correct submission, and wrong submission);
   const { user, setUser } = useContext(AuthContext);
+  const correctSFX = new Audio(Correct);
+  const incorrectSFX = new Audio(Incorrect);
 
   const handleSubmitAnswers = () => {
     // Check if the answer was correct
@@ -17,6 +22,7 @@ const PracticeFooter = ({ practice, selected, exercises, setExercises, setAttemp
         setCorrectAnswers(prevState => prevState + 1); // Increase the number of correct answers by one.
         setAttempts(prevState => prevState + 1); // Increase the number of attempts by one.
         setState('correct'); // Update footer status to correct.
+        correctSFX.play()
         return;
     };
     
@@ -24,6 +30,7 @@ const PracticeFooter = ({ practice, selected, exercises, setExercises, setAttemp
     setState('incorrect'); // Update footer status to incorrect.
     if (!practice && !user.isPremium) setUser( prevStatus => ({...prevStatus, hearts : prevStatus.hearts - 1})); // Substract one heart per failed attempt (only when it is a regular lesson, not a practice lesson, and when user is not premium).
     setAttempts(prevState => prevState + 1); // Increase the number of attempts by one.
+    incorrectSFX.play();
   };
 
   const handleContinue = () => {

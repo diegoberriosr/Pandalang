@@ -5,23 +5,36 @@ import { Button } from '../general/ButtonCVA.tsx';
 
 import Panda from '../../assets/elements/panda.png';
 
-const ExerciseWithHelp = ({ exercise, setSelected }) => {
+const ExerciseWithHelp = ({ exercise, state, selected, setSelected }) => {
   return (
     <>
         <h3 className='text-2xl text-slate-800 font-bold'>Select the correct meaning for "{exercise.answer.translation}"</h3>
         <div className='mt-10 flex flex-wrap justify-center gap-10'>
         {
-            exercise.words.map( (word, index) => 
-                <Button key={index} variant='course' className='w-32 h-36 md:w-48 md:h-52' onClick={() => setSelected(word)}>
-                    <div className='flex flex-col items-center space-y-5 normal-case'>
-                        <img src={Panda} alt='word graphical representation' className='w-[80px] h-[80px]'/>
-                        <div className='flex w-full items-center space-between space-x-2.5'>
-                            <span>{word.word}</span>
-                            <span className='px-2.5 py-1 border-2 border-gray-200 rounded-xl text-center'>{index + 1}</span>
-                        </div>
+            exercise.words.map( (word, index) => {
+                if ( state !== 'waiting' && exercise.answer.id === word.id) {
+                    return <Button key={index} variant='correct' className='mt-2.5 relative w-full h-14' onClick={() => setSelected(word)}>
+                    <div className='absolute left-2.5 px-2.5 py-1.5 border-2 border-gray-300 rounded-xl'>
+                        {index + 1}
                     </div>
-                </Button>
-            )
+                    <span className='normal-case text-slate-800 font-semibold'>{word.word}</span>
+                  </Button>              
+                  }
+                  else if( state === 'incorrect' && selected === word) {
+                    return <Button key={index} variant='incorrect' className='mt-2.5 relative w-full h-14' onClick={() => setSelected(word)}>
+                    <div className='absolute left-2.5 px-2.5 py-1.5 border-2 border-gray-300 rounded-xl'>
+                        {index + 1}
+                    </div>
+                    <span className='normal-case text-slate-800 font-semibold'>{word.word}</span>
+                  </Button>
+                  }
+                  else return <Button key={index} className='mt-2.5 relative w-full h-14' onClick={() => setSelected(word)}>
+                    <div className='absolute left-2.5 px-2.5 py-1.5 border-2 border-gray-300 rounded-xl'>
+                        {index + 1}
+                    </div>
+                    <span className='normal-case text-slate-800 font-semibold'>{word.word}</span>
+                  </Button>
+            })
         }
         </div>
     </>

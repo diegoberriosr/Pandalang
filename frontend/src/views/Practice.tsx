@@ -66,6 +66,7 @@ const Practice = ({ practice }) => {
   const [loading, setLoading] = useState<boolean>(false); // Loading state.
   const [exercises, setExercises] = useState<Exercise[]>(TEST_EXERCISES); // A list of exercises.
   const [selected, setSelected] = useState<Word | undefined>(undefined); // Selected option on an exercise.
+  const [state, setState] = useState<string>('waiting'); // Keeps track of submission state( waiting for submission, correct submission, and wrong submission);
   const [progress, setProgress ] = useState<number>(0); // Overall progress.
   const [correctAnswers, setCorrectAnswers] = useState<number>(0); // Keeps track of correct answers (used to calculate lesson accuracy in the future) 
   const [attempts, setAttempts] = useState<number>(0); // Keeps track of total attempts (also used to calculate lesson accuracy).
@@ -99,10 +100,13 @@ const Practice = ({ practice }) => {
     <PracticeHeader practice={practice} progress={progress} setQuitModal={setQuitModal}/>
     <main className='mt-20 w-screen flex-1 flex flex-col items-center justify-center px-2.5 md:px-5 lg:px-10'>
       { exercises.length > 0 && !loading &&
-        <ExerciseWithoutHelp exercise={exercises[0]} setSelected={setSelected}/>
+        <ExerciseWithoutHelp exercise={exercises[0]} state={state} selected={selected} setSelected={setSelected}/>
       }
     </main>
-    <PracticeFooter practice={practice} selected={selected} exercises={exercises} setExercises={setExercises} setCorrectAnswers={setCorrectAnswers} setAttempts={setAttempts}/>
+    <PracticeFooter practice={practice} selected={selected} exercises={exercises} 
+    setExercises={setExercises} setCorrectAnswers={setCorrectAnswers} 
+    state={state} setState={setState}
+    setAttempts={setAttempts}/>
     </>
   )
 }
