@@ -72,7 +72,7 @@ const Practice = ({ practice }) => {
   const [quitModal, setQuitModal] = useState<boolean>(false); // Used for displaying the exit confirmation modal.
   const [practiceLessonModal, setPracticeLessonModal] = useState<boolean>( practice ? true : false); // Used to display a modal when starting a practice lesson. 
   const { user } = useContext(AuthContext);
-  
+
   useEffect( () => {
     if(!loading){
         setSelected(undefined);
@@ -96,13 +96,13 @@ const Practice = ({ practice }) => {
     <Modal isVisible={quitModal}>
         <QuitPractice setQuitModal={setQuitModal}/>
     </Modal>
-    <PracticeHeader practice={false} progress={progress} setQuitModal={setQuitModal}/>
+    <PracticeHeader practice={practice} progress={progress} setQuitModal={setQuitModal}/>
     <main className='mt-20 w-screen flex-1 flex flex-col items-center justify-center px-2.5 md:px-5 lg:px-10'>
       { exercises.length > 0 && !loading &&
         <ExerciseWithoutHelp exercise={exercises[0]} setSelected={setSelected}/>
       }
     </main>
-    <PracticeFooter practice={false} selected={selected} exercises={exercises} setExercises={setExercises} setCorrectAnswers={setCorrectAnswers} setAttempts={setAttempts}/>
+    <PracticeFooter practice={practice} selected={selected} exercises={exercises} setExercises={setExercises} setCorrectAnswers={setCorrectAnswers} setAttempts={setAttempts}/>
     </>
   )
 }
