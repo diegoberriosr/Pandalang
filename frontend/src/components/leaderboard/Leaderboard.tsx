@@ -64,7 +64,7 @@ const Leaderboard = () => {
         <Button onClick={() => setWeeklyFilter(!weeklyFilter)}>
             { weeklyFilter ? 'This week' : 'All time'}
         </Button>
-        <ul className='w-10/12'>
+        <ul className='w-10/12 flex flex-col items-center'>
             { profiles.map( (profile, index) => 
                 <ViewListElement key={index} styling={`
                     ${ index === 0 ? 'bg-yellow-500 rounded-xl rounded-b border-none' : ''}
