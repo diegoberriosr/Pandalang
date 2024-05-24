@@ -18,7 +18,6 @@ import Mandarin from '../../assets/languages/mandarin.png';
 // Component imports
 import HoverMenu from './HoverMenu.tsx';
 import CourseToggler from './CourseToggler.tsx';
-
 // Context imports
 import { AuthContext } from '../../context/AuthContext.tsx';
 

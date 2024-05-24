@@ -17,7 +17,7 @@ const CourseToggler = () => {
   };
 
   return (
-    <div className='w-full sm:w-[200px]'>
+    <div className='w-full md:w-[200px]'>
       <h5 className='px-4 py-2 uppercase text-slate-500 font-bold border-b-2 border-gray-300 text-sm'>
         My courses
       </h5>
