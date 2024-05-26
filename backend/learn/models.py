@@ -140,6 +140,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.is_premium = not self.is_premium
         self.save()
 
+
 class Flag(models.Model):
     """Represents a flag associated with a language"""
     id = models.AutoField(primary_key=True)
@@ -148,6 +149,7 @@ class Flag(models.Model):
 
     def __str__(self):
         return f'{self.id}. {self.country}'
+
 
 class Language(models.Model):
     """Represents an available language in the app"""
@@ -159,16 +161,70 @@ class Language(models.Model):
     def __str__(self):
         return f'{self.id}. {self.name}'    
 
+
 class Course(models.Model):
     """Represents an app's course"""
 
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=25, null=True)
-    description = models.CharField(max_length=100, null=True, blank=True) # A small description of the course (not required)
+    description = models.CharField(max_length=100, null=True, blank=True) # A small description of the course (not required).
     target_language = models.ForeignKey(Language, on_delete=models.CASCADE, related_name='target_language_in') # The language teached in the course.
     origin_language = models.ForeignKey(Language, on_delete=models.CASCADE, related_name='origin_language_in') # The language through which the course is taught.
-    enrolled_users = models.ManyToManyField(User, related_name='enrolled_coursers', db_index=True) # Users associated/enrolled in an specific course
+    enrolled_users = models.ManyToManyField(User, related_name='enrolled_coursers', db_index=True) # Users associated/enrolled in an specific course.
 
     def __str__(self):
         return f'{self.id}. {self.target_language} - {self.origin_language}'
+
+
+class Section(models.Model):
+    """Represents a courses' section"""
+
+    LEVELS = [ # Common European Framework of Reference levels for Languages
+        ( 'A1', 'A1'), # Beginner
+        ( 'A2', 'A2'), # Elementary
+        ( 'B1', 'B1'), # Intermediate
+        ( 'B2', 'B2'), # Upper Intermeadiate
+        ( 'C1', 'C1'), # Advanced
+        ( 'C2', 'C2')  # Proficient
+    ]
+
+
+    def get_default_number_in_course():
+        return lambda : Section.get_number_in_course(Section.course.id)
+    
+    id = models.AutoField(primary_key=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='sections') # The course a section is associated to.
+    description = models.CharField(max_length=35) # A brief description of a course's section.
+    level = models.CharField(max_length=2, choices=LEVELS) # Represent's the difficulty of a section's vocabulary according to the CEFR.
+    number_in_course = models.PositiveIntegerField(default=0) # A number representing the order/position of a section inside a course.
+    
+
+    def __str__(self):
+        return f'{self.id}. {self.course.title} - {self.number_in_course}'
+    
+    
+    def get_number_in_course(self):
+        """Computes the number in course a lesson should have
+        
+        This function computes the number inside the course a section should have by adding 1 to the highest number a lesson
+        of a course has.
+
+        Args:
+            course (Course) : The course of interest for getting the highest number of order.
+        
+        Returns:
+            highest_number_in_course (int) : A non-zero number which represents the highest current position of a lesson inside a course.
+        """
+        highest_section = self.course.sections.order_by('-number_in_course').first() # Get the number in course of the most recent section of a given course.
+        highest_number_in_course = 0
+
+        if highest_section is not None: # If the course has more than one section, set the highest number to the one of the last section.
+            highest_number_in_course = highest_section.number_in_course
+
+        return highest_number_in_course + 1 # Return the current highest number in course.
+    
+
+    def save(self, *args, **kwargs):
+        self.number_in_course = self.get_number_in_course()
+        super().save(*args, **kwargs)
 
