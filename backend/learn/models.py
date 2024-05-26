@@ -37,6 +37,7 @@ class UserManager(BaseUserManager):
         
         user = self.create_user(email, username, password, **other_args)
         user.is_superuser = True   
+        user.is_staff = True
         user.save()  
         
         return user
@@ -45,6 +46,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     """ A model representing an user's account."""
 
     id = models.AutoField(primary_key=True)
+    is_staff = models.BooleanField(default=False)
     email = models.EmailField(max_length=50, unique=True)
     username = models.CharField(max_length=15, unique=True)
     date_joined = models.DateField(auto_now_add=True)
@@ -138,4 +140,18 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.is_premium = not self.is_premium
         self.save()
 
-    
+class Flag(models.Model):
+    """Represents a flag associated with a language"""
+    id = models.AutoField(primary_key=True)
+    country = models.CharField(max_length=56) # Name of the country/entity the flag is associated to
+    flag = models.ImageField(upload_to='flags/')
+
+class Language(models.Model):
+    """Represents an available language in the app"""
+
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=25, unique=True) # Name of the language
+    flag = models.ForeignKey(Flag, on_delete=models.CASCADE, related_name='associated_languages')
+
+    def __str__(self):
+        return '{self.id}. {self.name}'    
