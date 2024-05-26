@@ -260,6 +260,18 @@ class Lesson(models.Model):
         super().save(*args, **kwargs)
     
 
+class Session(models.Model):
+    """Represents a study session where the user completed a lesson"""
+
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sessions', db_index=True) # The user associated with the session.
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='sessions', db_index=True) # The lesson associated with the session.
+    timestamp = models.DateTimeField(auto_now=True) # The timestamp associated with the session.
+
+    def __str__(self):
+        return f'{self.id}. {self.user.id}-{self.lesson.id} ({self.timestamp})'
+
+
 class Word(models.Model):
     """Represents a word in a language"""
     id = models.AutoField(primary_key=True) 
@@ -267,6 +279,9 @@ class Word(models.Model):
     language = models.ForeignKey(Language, on_delete=models.CASCADE, related_name='words') # Specifies the language of the word.
     word = models.TextField() # The word itself.
     seen_by = models.ManyToManyField(User, related_name='seen_words', db_index=True) # Represents how many users have seen/encountered this word in a leson.
+    
+    def __str__(self):
+        return f'{self.id}. {self.word} ({self.language.name})'
 
 
 class Translation(models.Model):
@@ -274,4 +289,7 @@ class Translation(models.Model):
     id = models.AutoField(primary_key=True)
     target = models.ForeignKey(Word, on_delete=models.CASCADE, related_name='target_translations', db_index = True) # The meaning of the word in the target language
     origin = models.ForeignKey(Word, on_delete= models.CASCADE, related_name='origin_translations', db_index = True) # The meaning of the word in the origin language
+    
+    def __str__(self):
+        return f'{self.id} {self.target.word} ({self.target.language.name}) -> {self.origin.word} ({self.origin.language.name})'
 
