@@ -54,6 +54,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     hearts = models.SmallIntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)], default=5) # Represents user remaining attempts (Between 0 and 5).
     xp = models.PositiveIntegerField(validators=[MinValueValidator(0)], default=0) # Accumulated user xp (must be bigger than 0).
     available_xp = models.PositiveIntegerField(validators=[MinValueValidator(0)], default=0) # Available spendable xp (must be bigger than 0).
+    on_streak = models.BooleanField(default=False) # Represent's an user streak in completing lessons daily.
+    current_streak = models.PositiveIntegerField(null=True) # Current day streak (if applicable).
+    largest_streak = models.PositiveIntegerField(null=True) # Largest historical streak (if applicable).
     is_premium = models.BooleanField(default=False)  # Indicates whether user has a paid membership or not.
 
     USERNAME_FIELD = 'email'
@@ -171,6 +174,7 @@ class Course(models.Model):
     target_language = models.ForeignKey(Language, on_delete=models.CASCADE, related_name='target_language_in') # The language teached in the course.
     origin_language = models.ForeignKey(Language, on_delete=models.CASCADE, related_name='origin_language_in') # The language through which the course is taught.
     enrolled_users = models.ManyToManyField(User, related_name='enrolled_coursers', db_index=True) # Users associated/enrolled in an specific course.
+    active_users = models.ManyToManyField(User, related_name='active_course', db_index=True) # Represents users who have a course instance as active.
 
     def __str__(self):
         return f'{self.id}. {self.target_language} - {self.origin_language}'
