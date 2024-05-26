@@ -35,10 +35,10 @@ const UserStatus = () => {
   const { user } = React.useContext(AuthContext) // Get user information to dynamically render information like remaining hearts and active language/course
 
   return (
-    <div className='relative inset-0 md:left-auto mt-0 md:mt-6 w-screen md:w-[300px] md:ml-auto h-14 flex items-center justify-between z-50'>
+    <div className='md:left-auto mt-0 md:mt-6 w-screen md:w-[300px] md:ml-auto h-14 flex items-center justify-between z-50'>
       <HoverMenu menuItems={<CourseToggler/>}>
         <figure className='w-10 h-10 md:w-8 md:h-8'>
-            <img src={LANGUAGE_FLAGS[user.active_course]} alt='active language flag' className='w-full h-full object-fit'/>
+            <img src={LANGUAGE_FLAGS[user.active_course.title]} alt='active language flag' className='w-full h-full object-fit'/>
         </figure>
       </HoverMenu>
       <HoverMenu menuItems={undefined}>

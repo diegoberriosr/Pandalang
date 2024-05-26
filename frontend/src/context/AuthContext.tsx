@@ -1,8 +1,14 @@
 import React, { useState, createContext, SetStateAction, Dispatch, ReactNode} from 'react';
 
+type Course = {
+    id : number,
+    title : string,
+    current_lesson : number
+}
+
 type User = {
     username : string,
-    active_course : string,
+    active_course : Course,
     enrolled_courses : number[],
     hearts : number,
     xp : number,
@@ -17,7 +23,11 @@ type AuthContextType = {
 
 const TEST_USER : User = { // Temporary test user
     "username" : "Paco",
-    "active_course" : "russian",
+    "active_course" : {
+        'id' : 1,
+        'title' : 'russian',
+        'current_lesson' : 3 
+    },
     "enrolled_courses" : [1],
     "hearts" : 5,
     "xp" : 100,

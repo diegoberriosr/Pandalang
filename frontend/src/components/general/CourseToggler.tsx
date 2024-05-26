@@ -3,10 +3,26 @@ import { useNavigate } from 'react-router-dom';
 
 // Icon imports
 import { CiSquarePlus } from "react-icons/ci";
-import Russian from '../../assets/languages/russian.png';
+
+// Language flag icon imports
+import English from '../../assets/languages/english.png';
+import Spanish from '../../assets/languages/spanish.png';
 import French from '../../assets/languages/french.png';
 import German from '../../assets/languages/german.png';
+import Russian from '../../assets/languages/russian.png';
 import Arabic from '../../assets/languages/arabic.png';
+import Mandarin from '../../assets/languages/mandarin.png';
+
+const LANGUAGE_FLAGS = { // A list of language flags in .png format
+  'english' : English,
+  'spanish' : Spanish,
+  'french' : French,
+  'german' : German,
+  'russian' : Russian,
+  'arabic' : Arabic,
+  'mandarin' : Mandarin
+};
+
 
 const CourseToggler = () => {
   const navigate = useNavigate();
@@ -16,6 +32,7 @@ const CourseToggler = () => {
     navigate('/enroll');
   };
 
+  
   return (
     <div className='w-full md:w-[200px]'>
       <h5 className='px-4 py-2 uppercase text-slate-500 font-bold border-b-2 border-gray-300 text-sm'>

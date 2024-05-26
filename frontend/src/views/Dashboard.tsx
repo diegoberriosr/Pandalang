@@ -31,9 +31,9 @@ const Dashboard = () => {
   }, [currentUrl])
 
   return (
-      <div className='flex w-screen xl:pr-36 md:pr-10'>
+      <div className='relative flex w-full'>
         <Sidebar currentUrl={currentUrl}/>
-          <Routes>
+        <Routes>
             <Route path='learn' element={<Learn/>}/>
             <Route path='quests' element={<Quests/>}/>
             <Route path='shop' element={<Shop/>}/>
@@ -41,7 +41,7 @@ const Dashboard = () => {
             <Route path='enroll' element={<Courses/>}/>
           </Routes>
         { currentUrl !== '/enroll' && 
-        <div>
+        <div className='sticky block inset-0 h-screen xl:pr-36 md:pr-10'>
           <UserStatus/>
           <Info/>
         </div>
