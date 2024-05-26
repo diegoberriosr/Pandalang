@@ -188,17 +188,12 @@ class Section(models.Model):
         ( 'C2', 'C2')  # Proficient
     ]
 
-
-    def get_default_number_in_course():
-        return lambda : Section.get_number_in_course(Section.course.id)
-    
     id = models.AutoField(primary_key=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='sections') # The course a section is associated to.
     description = models.CharField(max_length=35) # A brief description of a course's section.
     level = models.CharField(max_length=2, choices=LEVELS) # Represent's the difficulty of a section's vocabulary according to the CEFR.
     number_in_course = models.PositiveIntegerField(default=0) # A number representing the order/position of a section inside a course.
-    
-
+  
     def __str__(self):
         return f'{self.id}. {self.course.title} - {self.number_in_course}'
     
@@ -208,9 +203,6 @@ class Section(models.Model):
         
         This function computes the number inside the course a section should have by adding 1 to the highest number a lesson
         of a course has.
-
-        Args:
-            course (Course) : The course of interest for getting the highest number of order.
         
         Returns:
             highest_number_in_course (int) : A non-zero number which represents the highest current position of a lesson inside a course.
@@ -227,4 +219,59 @@ class Section(models.Model):
     def save(self, *args, **kwargs):
         self.number_in_course = self.get_number_in_course()
         super().save(*args, **kwargs)
+
+
+class Lesson(models.Model):
+    """Represents a lesson inside a course"""
+
+    id = models.AutoField(primary_key=True)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='lessons') # Represents the section a lesson is associated to.
+    number_in_course = models.PositiveIntegerField(default=0) # Indicates the position of a lesson inside a course.
+    cycles = models.PositiveIntegerField(default=3) # Indicated how many times a lesson must be completed to be mastered.
+
+    def __str__(self):
+        return f'{self.id}. {self.section.course.title} - ({self.section.number_in_course}-{self.number_in_course})'
+
+
+    def get_number_in_course(self):
+        """Computes the number in course a lesson should have
+        
+        This function computes the number inside the course a lesson should have by adding 1 to the highest number a lesson
+        of a course has.
+        
+        Returns:
+            highest_number_in_course (int) : A non-zero number which represents the highest current position of a lesson inside a course.
+        """
+        highest_section = self.section.lessons.order_by("-number_in_course").first() # Get the number in course of the most recent lesson of the last section of a given course..
+        highest_number_in_course = 0
+
+        if highest_section is not None: # Check whether the course has any sections
+            highest_lesson = highest_section.lessons.order_by("-number_in_course").first() # Get the highest lesson from the section.
+
+            # If the section has at least one lesson, get the postion number of the last one.
+            if highest_lesson is not None: 
+                highest_number_in_course = highest_lesson.number_in_course
+
+        return highest_number_in_course + 1 # Return the current highest number in course.
+    
+
+    def save(self, *args, **kwargs):
+        self.number_in_course = self.get_number_in_course()
+        super().save(*args, **kwargs)
+    
+
+class Word(models.Model):
+    """Represents a word in a language"""
+    id = models.AutoField(primary_key=True) 
+    lesson = models.ManyToManyField(Lesson, related_name='words') # Represents the lessons associated with the word.
+    language = models.ForeignKey(Language, on_delete=models.CASCADE, related_name='words') # Specifies the language of the word.
+    word = models.TextField() # The word itself.
+    seen_by = models.ManyToManyField(User, related_name='seen_words', db_index=True) # Represents how many users have seen/encountered this word in a leson.
+
+
+class Translation(models.Model):
+    """Represents a pair translation of words"""
+    id = models.AutoField(primary_key=True)
+    target = models.ForeignKey(Word, on_delete=models.CASCADE, related_name='target_translations', db_index = True) # The meaning of the word in the target language
+    origin = models.ForeignKey(Word, on_delete= models.CASCADE, related_name='origin_translations', db_index = True) # The meaning of the word in the origin language
 
