@@ -146,6 +146,9 @@ class Flag(models.Model):
     country = models.CharField(max_length=56) # Name of the country/entity the flag is associated to
     flag = models.ImageField(upload_to='flags/')
 
+    def __str__(self):
+        return f'{self.id}. {self.country}'
+
 class Language(models.Model):
     """Represents an available language in the app"""
 
@@ -154,4 +157,18 @@ class Language(models.Model):
     flag = models.ForeignKey(Flag, on_delete=models.CASCADE, related_name='associated_languages')
 
     def __str__(self):
-        return '{self.id}. {self.name}'    
+        return f'{self.id}. {self.name}'    
+
+class Course(models.Model):
+    """Represents an app's course"""
+
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=25, null=True)
+    description = models.CharField(max_length=100, null=True, blank=True) # A small description of the course (not required)
+    target_language = models.ForeignKey(Language, on_delete=models.CASCADE, related_name='target_language_in') # The language teached in the course.
+    origin_language = models.ForeignKey(Language, on_delete=models.CASCADE, related_name='origin_language_in') # The language through which the course is taught.
+    enrolled_users = models.ManyToManyField(User, related_name='enrolled_coursers', db_index=True) # Users associated/enrolled in an specific course
+
+    def __str__(self):
+        return f'{self.id}. {self.target_language} - {self.origin_language}'
+
