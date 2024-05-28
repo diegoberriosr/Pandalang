@@ -1,4 +1,6 @@
 from random import randint
+from datetime import datetime, timedelta
+
 def assign_exercise_type(exercises):
     """Randomly assigns to each element of an Exercises list
 
@@ -29,3 +31,37 @@ def assign_exercise_type(exercises):
             exercise.type = 'listening' # Listening practice in target language.
 
     return exercises
+
+def get_last_sunday():
+    """Returns the closest last sunday
+    
+    Computes the date of the most recent past sunday.
+
+    Returns:
+        last_sunday (datetime) : Last sunday at 18:00h 00:00s 
+    """
+    today = datetime.today()
+    last_sunday = today - timedelta(days=today.weekday() + 1)
+
+    return last_sunday.replace(hour=18, minute=0, second=0, microsecond=0) # Set last sunday's time at 18:00h 00:00s (resetting of each week's leaderboard).
+
+def get_next_sunday():
+    """Returns the current next sunday
+    
+    Computes the date of this week's next sunday.
+
+    Returns:
+        next_sunday (datetime) : Next sunday at 18:00h 00:00s 
+    """
+    today = datetime.today()
+
+    # Compute days until sunday.
+    days_until_sunday = timedelta(6 - today.weekday())
+
+    # Check edge cases.
+    if today.weekday() == 6:
+        days_until_sunday = 7
+
+    next_sunday = today + timedelta(days_until_sunday) # Get next sunday's date.
+
+    return next_sunday.replace(hour=18, minute=0, second=0, microsecond=0) # Set the next sunday's time at 18:00h 00:00s (resetting of each week's leaderboard.)

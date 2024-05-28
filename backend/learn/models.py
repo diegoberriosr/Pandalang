@@ -145,6 +145,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.save()
 
 
+    def leaderboard_serialize(self, accum_xp):
+        return {
+            'id' : self.id,
+            'username' : self.username,
+            'xp' : accum_xp if accum_xp else self.xp
+        }
+
+
 class Flag(models.Model):
     """Represents a flag associated with a language"""
     id = models.AutoField(primary_key=True)

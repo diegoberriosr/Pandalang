@@ -1,12 +1,13 @@
 from django.db import IntegrityError
 from django.http import JsonResponse, HttpResponse, Http404, HttpResponseForbidden
+from django.db.models import Sum
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from .models import User, Language, Course, Lesson, Session
 
 import json
 from random import shuffle, sample
-from .utils import assign_exercise_type
+from .utils import assign_exercise_type, get_last_sunday, get_next_sunday
 from math import ceil
 
 # Create your views here.
@@ -230,3 +231,27 @@ def update_membership(request):
     request.user.update_membership_status()
 
     return JsonResponse({ 'message' : 'Membership was successfully updated.'})
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_leaderboard_scores(request):
+    filter = request.GET.get('filter')
+
+    # Check if requesting for a global ranking of users
+    if filter == 'global':
+        profiles = User.objects.all().order_by('-xp')[:10] # Get the top 10 global users by amount of xp
+
+        # Serialize profiles
+        profile_data = [profile.leaderboard_serialize() for profile in profiles]
+
+        return JsonResponse(profile_data, safe=False)
+    
+    # Otherwise, get the current week's top 10 users by earned xp
+    last_sunday = get_last_sunday()
+    next_sunday = get_next_sunday()
+    profiles = Session.objects.filter(timestamp__range=(last_sunday, next_sunday)).annotate(total_xp=Sum('earned_xp'))[:10]
+    
+    profile_data = [profile.leaderboard_serialize(profile.total_xp) for profile in profiles]
+
+    return JsonResponse(profile_data, safe=False)
