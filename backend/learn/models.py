@@ -58,7 +58,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     current_streak = models.PositiveIntegerField(null=True) # Current day streak (if applicable).
     largest_streak = models.PositiveIntegerField(null=True) # Largest historical streak (if applicable).
     is_premium = models.BooleanField(default=False)  # Indicates whether user has a paid membership or not.
-
+    active_course = models.ForeignKey('Course', null=True, on_delete=models.PROTECT, db_index=True, related_name='active_users') # Represents the current active course (can be null).
+    
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
     objects = UserManager()
@@ -173,11 +174,27 @@ class Course(models.Model):
     description = models.CharField(max_length=100, null=True, blank=True) # A small description of the course (not required).
     target_language = models.ForeignKey(Language, on_delete=models.CASCADE, related_name='target_language_in') # The language teached in the course.
     origin_language = models.ForeignKey(Language, on_delete=models.CASCADE, related_name='origin_language_in') # The language through which the course is taught.
-    enrolled_users = models.ManyToManyField(User, related_name='enrolled_coursers', db_index=True) # Users associated/enrolled in an specific course.
-    active_users = models.ManyToManyField(User, related_name='active_course', db_index=True) # Represents users who have a course instance as active.
+    enrolled_users = models.ManyToManyField(User, related_name='enrolled_courses', db_index=True) # Users associated/enrolled in an specific course.
 
     def __str__(self):
         return f'{self.id}. {self.target_language} - {self.origin_language}'
+    
+
+    def serialize(self, user, current_lesson):
+        return {
+            'id' : self.id,
+            'title' : self.title,
+            'sections' : [section.serialize(user) for section in self.sections.all()],
+            'current_lesson' : current_lesson
+        }
+
+
+    def card_serialize(self):
+        return {
+            'id' : self.id,
+            'title' : self.title,
+            'learners' : self.enrolled_users.count()
+        }
 
 
 class Section(models.Model):
@@ -225,6 +242,15 @@ class Section(models.Model):
         super().save(*args, **kwargs)
 
 
+    def serialize(self, user):
+        return {
+            'id' : self.id,
+            'description' : self.description,
+            'number_in_course' : self.number_in_course,
+            'lessons' : [lesson.serialize(user) for lesson in self.lessons.all()]
+        }
+
+
 class Lesson(models.Model):
     """Represents a lesson inside a course"""
 
@@ -232,6 +258,7 @@ class Lesson(models.Model):
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='lessons') # Represents the section a lesson is associated to.
     number_in_course = models.PositiveIntegerField(default=0) # Indicates the position of a lesson inside a course.
     cycles = models.PositiveIntegerField(default=3) # Indicated how many times a lesson must be completed to be mastered.
+    completed_by = models.ManyToManyField(User, related_name='completed_lessons')
 
     def __str__(self):
         return f'{self.id}. {self.section.course.title} - ({self.section.number_in_course}-{self.number_in_course})'
@@ -262,6 +289,14 @@ class Lesson(models.Model):
     def save(self, *args, **kwargs):
         self.number_in_course = self.get_number_in_course()
         super().save(*args, **kwargs)
+
+
+    def serialize(self, user):
+        return {
+            'id' : self.id,
+            'number_in_course' : self.number_in_course,
+            'completed' : user in self.completed_by.all() if user else False
+        }
     
 
 class Session(models.Model):
