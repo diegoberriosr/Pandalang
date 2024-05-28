@@ -194,3 +194,31 @@ def complete_lesson(request):
 
     return JsonResponse(new_session.earned_xp)
 
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_hearts(request):
+
+    # Get amount from the request's body.
+    amount = json.loads(request.body).get('amount')
+
+    # Update user hearts.
+    request.user.update_hearts(amount)
+
+    return JsonResponse({ 'message' : 'Hearts were sucessfully updated.'})
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def refill_hearts(request):
+
+    # Get hearts amount and xp_cost
+    hearts_amount = json.loads(request.body).get('hearts_amount')
+    xp_cost = json.loads(request.body).get('xp_cost')
+
+    # Update hearts and available xp attributes
+    request.user.consume_available_xp(xp_cost)
+    request.user.update_hearts(hearts_amount)
+
+    return JsonResponse({ 'message' : 'Transaction was sucessful.'})
+
