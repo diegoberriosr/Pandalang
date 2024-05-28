@@ -257,6 +257,7 @@ class Lesson(models.Model):
     id = models.AutoField(primary_key=True)
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='lessons') # Represents the section a lesson is associated to.
     number_in_course = models.PositiveIntegerField(default=0) # Indicates the position of a lesson inside a course.
+    granted_xp = models.PositiveIntegerField(default=10) # Number of xp granted for completing a lesson with 100% accuracy(0 mistakes).
     cycles = models.PositiveIntegerField(default=3) # Indicated how many times a lesson must be completed to be mastered.
     completed_by = models.ManyToManyField(User, related_name='completed_lessons')
 
@@ -305,6 +306,7 @@ class Session(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sessions', db_index=True) # The user associated with the session.
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='sessions', db_index=True) # The lesson associated with the session.
+    earned_xp = models.PositiveIntegerField(default=10) # Amount of xp earned on this session.
     timestamp = models.DateTimeField(auto_now=True) # The timestamp associated with the session.
 
     def __str__(self):

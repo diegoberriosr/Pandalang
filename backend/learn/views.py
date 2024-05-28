@@ -2,11 +2,12 @@ from django.db import IntegrityError
 from django.http import JsonResponse, HttpResponse, Http404, HttpResponseForbidden
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from .models import User, Language, Course, Lesson
+from .models import User, Language, Course, Lesson, Session
 
 import json
 from random import shuffle, sample
 from .utils import assign_exercise_type
+from math import ceil
 
 # Create your views here.
 
@@ -120,7 +121,7 @@ def get_lesson(request, lesson_id):
     
     # Check that user is enrolled in the associated course and also has it as active.
     if lesson.section.course not in request.user.enrolled_courses.all() or lesson.section.course != request.user.active_course:
-        raise HttpResponseForbidden('ERROR: user is not enrolled in this course or does not have this course as active')
+        return HttpResponseForbidden('ERROR: user is not enrolled in this course or does not have this course as active')
     
     # Number of exercises is equal to the number 
     # of exercises associated with the lesson * 4.
@@ -148,16 +149,48 @@ def get_practice_lesson(request, course_id):
         raise Http404(f'ERROR: course with id={course_id} does not exist')
 
     if course not in request.user.enrolled_courses.all() or request.user.active_course != course:
-        raise HttpResponseForbidden('ERROR: user is not enrolled in this course or does not have this course as active')
+        return HttpResponseForbidden('ERROR: user is not enrolled in this course or does not have this course as active')
 
-    # Get translations for practice lesson
+    # Get translations for practice lesson.
     exercises = sample(request.user.seen_translations.filter(lesson__section__course__id=course_id), 4) # Get 4 random seen translations.
 
-    # Assign a random type to each exercise
+    # Assign a random type to each exercise.
     exercises = assign_exercise_type(exercises)
 
-    # Serialize data
+    # Serialize data.
     exercise_data = [exercise.serialize() for exercise in exercises]
-    
+
     return JsonResponse(exercise_data, safe=False)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def complete_lesson(request):
+    
+    # Get lesson id and accuracy from the request's body.
+    lesson_id = json.loads(request.body).get('lesson_id')
+    accuracy = json.loads(request.body).get('accuracy')
+
+    # Search lesson by id, raise an exception if it does not exist.
+    try:
+        lesson = Lesson.objects.get(id=lesson_id)
+    except Lesson.DoesNotExist:
+        raise Http404(f'ERROR: lesson with id={lesson_id} does not exist')
+    
+    # Make sure that user is enrolled in a course and has it as active.
+    if lesson.section.course not in request.user.enrolled_courses.all() or lesson.section.course != request.user.active_course:
+        return HttpResponseForbidden('ERROR: user is not enrolled in this course or does not have this course as active')
+    
+    # Make a new session entry in the database.
+    new_session = Session(user=request.user, lesson=lesson, earned_xp=ceil(accuracy*lesson.granted_xp))
+    new_session.save()
+
+    # Update user xp
+    request.user.update_xp(new_session.earned_xp)
+
+    # If the number of sessions associated with the lesson and the user exceeds the number of cycles of the session, mark the lesson as completed by the user.
+    if Session.objects.filter(lesson=lesson).filter(user=request.user).count() >= lesson.cycles and request.user not in lesson.completed_by.all():
+        lesson.completed_by.add(request.user)
+
+    return JsonResponse(new_session.earned_xp)
 
