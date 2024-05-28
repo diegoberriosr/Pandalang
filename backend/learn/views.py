@@ -205,7 +205,7 @@ def update_hearts(request):
     # Update user hearts.
     request.user.update_hearts(amount)
 
-    return JsonResponse({ 'message' : 'Hearts were sucessfully updated.'})
+    return JsonResponse({ 'message' : 'Hearts were successfully updated.'})
 
 
 @api_view(['PUT'])
@@ -220,5 +220,13 @@ def refill_hearts(request):
     request.user.consume_available_xp(xp_cost)
     request.user.update_hearts(hearts_amount)
 
-    return JsonResponse({ 'message' : 'Transaction was sucessful.'})
+    return JsonResponse({ 'message' : 'Transaction was successful.'})
 
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_membership(request):
+
+    request.user.update_membership_status()
+
+    return JsonResponse({ 'message' : 'Membership was successfully updated.'})

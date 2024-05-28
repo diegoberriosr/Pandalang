@@ -17,5 +17,6 @@ urlpatterns = [
     path('practice/<int:course_id>', views.get_practice_lesson, name='get_practice_lesson'),
     path('lesson/complete/<int:lesson_id>', views.complete_lesson, name='complete_lesson'),
     path('hearts/update', views.update_hearts, name='update_hearts'),
-    path('hearts/refill', views.refill_hearts, name='refill_hearts')
+    path('hearts/refill', views.refill_hearts, name='refill_hearts'),
+    path('membership', views.update_membership, name='update_membership')
 ]
