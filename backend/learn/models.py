@@ -314,10 +314,8 @@ class Session(models.Model):
 class Word(models.Model):
     """Represents a word in a language"""
     id = models.AutoField(primary_key=True) 
-    lesson = models.ManyToManyField(Lesson, related_name='words') # Represents the lessons associated with the word.
     language = models.ForeignKey(Language, on_delete=models.CASCADE, related_name='words') # Specifies the language of the word.
     word = models.TextField() # The word itself.
-    seen_by = models.ManyToManyField(User, related_name='seen_words', db_index=True) # Represents how many users have seen/encountered this word in a leson.
     
     def __str__(self):
         return f'{self.id}. {self.word} ({self.language.name})'
@@ -326,9 +324,18 @@ class Word(models.Model):
 class Translation(models.Model):
     """Represents a pair translation of words"""
     id = models.AutoField(primary_key=True)
+    lesson = models.ManyToManyField(Lesson, related_name='translations') # Represents the lessons associated with the translation.
     target = models.ForeignKey(Word, on_delete=models.CASCADE, related_name='target_translations', db_index = True) # The meaning of the word in the target language
     origin = models.ForeignKey(Word, on_delete= models.CASCADE, related_name='origin_translations', db_index = True) # The meaning of the word in the origin language
+    seen_by = models.ManyToManyField(User, related_name='seen_translations', db_index=True) # Represents how many users have seen/encountered this word in a leson. 
     
     def __str__(self):
         return f'{self.id} {self.target.word} ({self.target.language.name}) -> {self.origin.word} ({self.origin.language.name})'
-
+    
+    def serialize(self):
+        return {
+            'id' : self.id,
+            'target' : self.target.word,
+            'origin' : self.origin.word,
+            'type' : self.type
+        }
