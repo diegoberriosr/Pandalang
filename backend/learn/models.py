@@ -145,6 +145,15 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.save()
 
 
+    def serialize(self):
+        return {
+            'hearts' : self.hearts,
+            'available_xp' : self.available_xp,
+            'active_course' : self.active_course.profile_serialize(),
+            'enrolled_courses' : [course.serialize() for course in self.enrolled_courses.all()],
+        }
+
+
     def leaderboard_serialize(self, accum_xp):
         return {
             'id' : self.id,
@@ -203,7 +212,13 @@ class Course(models.Model):
             'title' : self.title,
             'learners' : self.enrolled_users.count()
         }
-
+    
+    def profile_serialize(self):
+        return {
+            'id' : self.id,
+            'title' : self.title,
+            'flag' : self.target_language.flag
+        }
 
 class Section(models.Model):
     """Represents a courses' section"""

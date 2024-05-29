@@ -35,6 +35,16 @@ def register_user(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+def get_profile_information(request):
+    
+    # Get requester basic data (hearts, available xp, active course, courses enrolled in)
+    user = request.user
+    user_data = user.serialize()
+
+    return JsonResponse(user_data, safe=False)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_available_courses(request):
 
     # A filter for getting courses taught in an specific language (not required).
