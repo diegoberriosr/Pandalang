@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const defaultInstance = axios.create({
-    baseURL : 'http://localhost:3000/',
+    baseURL : 'http://127.0.0.1:8000/',
     headers : {
         'Content-Type' : 'application/json',
     }
@@ -10,9 +10,9 @@ const defaultInstance = axios.create({
 defaultInstance.interceptors.request.use( 
     (config) => {
 
-        const token = localStorage.getItem('authTokens');
+        const token = JSON.parse(localStorage.getItem('authTokens'));
         if(token) {
-            config.headers['Authorization'] = 'Bearer' + token.access;
+            config.headers['Authorization'] = 'Bearer ' + String(token.access);
         }
 
         return config;

@@ -69,7 +69,7 @@ const Landing = () => {
       <footer className='w-screen h-20 border-t-2 border-slate-300 md:px-[5%] lg:px-[18%] py-2.5 hidden xl:block'>
         <ul className='w-full h-full flex justify-start items-center space-x-20'>
             { AVAILABLE_COURSES.map( language => 
-               <li className='flex items-center space-x-2'>
+               <li key={language.title} className='flex items-center space-x-2'>
                 <img src={language.flag} alt={language.title} className='w-6 h-6 lg:w-10 lg:h-10'/>
                 <span className='text-slate-500 uppercase font-bold tracking-wide text-sm'>{language.title}</span>
                </li> 

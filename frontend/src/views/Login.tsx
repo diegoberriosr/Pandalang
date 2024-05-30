@@ -1,4 +1,4 @@
-import React, { useState }from 'react'
+import React, { useState, useContext }from 'react'
 import { useFormik } from 'formik';
 
 // Icon imports
@@ -7,28 +7,30 @@ import { IoIosClose } from "react-icons/io";
 // Component imports
 import { Button } from '../components/general/ButtonCVA.tsx';
 
+// Context imports
+import { AuthContext } from '../context/AuthContext.tsx';
 const Login = ({ handleVisibility, handleRegisterVisibily }) => {
 
   const [loading, setLoading] = useState<boolean>(false);
+  const { logInUser} = useContext(AuthContext);
 
   const { values, handleChange, handleBlur} = useFormik({
     initialValues : {
-        'username' : '',
+        'email' : '',
         'password' : ''
     }
   });
 
-  const handleSubmit = (guest) => {
-    
+  const handleSubmit = (event, guest) => {
+    event.preventDefault();
     if (guest) { // Attempt to log as a guest if guest == True.
-      console.log({ username : 'username'});
+      logInUser({ email : 'paco@mail.com', password : '12345'}, setLoading)
       return;
     };
 
-    if ( values.username.length === 0 || values.password.length === 0) return; // Only make a request if username and password fields are not null
-    setLoading(true);
-    console.log(values);
-    setLoading(false);
+    if ( values.email.length === 0 || values.password.length === 0) return; // Only make a request if username and password fields are not null
+    logInUser(values, setLoading);
+
   };
 
   return (
@@ -40,11 +42,11 @@ const Login = ({ handleVisibility, handleRegisterVisibily }) => {
       </div>
       <div className='mt-8 w-full bg-gray-900 pb-5 flex flex-col items-center '>
         <h1 className='text-2xl font-bold'>Log in</h1>
-        <form className='mt-9 w-full md:w-auto px-8 md:px-0' onSubmit={() => handleSubmit(false)}>
+        <form className='mt-9 w-full md:w-auto px-8 md:px-0 flex flex-col items-center' onSubmit={(e) => handleSubmit(e, false)}>
             <div className='w-full md:w-80 h-11 flex items-center bg-gray-800 border border-slate-600 rounded-xl px-5'>
                 <input 
-                value={values.username} name='username'
-                type='text' placeholder='Username or e-mail' className='w-full h-full bg-transparent focus:outline-none placeholder-slate-200'
+                value={values.email} name='email'
+                type='email' placeholder='Username or e-mail' className='w-full h-full bg-transparent focus:outline-none placeholder-slate-200'
                 onChange={handleChange} onBlur={handleBlur}/>
             </div>
             <div className='mt-4 w-full md:w-80 h-11 flex items-center bg-gray-800 border border-slate-600 rounded-xl px-5'>
@@ -56,9 +58,11 @@ const Login = ({ handleVisibility, handleRegisterVisibily }) => {
                     forgot?
                 </span>
             </div>
-            <Button disabled={values.username.length === 0 || values.password.length === 0 || loading } type='submit' variant='loginPrimary' size='info' className='w-full md:w-80 mt-7'>Log in</Button>
+            <Button disabled={values.email.length === 0 || values.password.length === 0 || loading } type='submit' variant='loginPrimary' size='info' className='w-full md:w-80 mt-7'>
+              { loading ? 'Loading' : 'Log in'}
+              </Button>
+            <Button disabled={loading} type='submit' variant='loginPrimary' size='info' className='w-full md:w-80 mt-7'>Log in as guest</Button>
         </form>
-        <Button disabled={loading} type='submit' variant='loginPrimary' size='info' className='w-full md:w-80 mt-7'>Log in as guest</Button>
         <div className='relative mt-7 w-full md:w-80 flex justify-center items-center px-9 md:px-0'>
             <span className='absolute -top-2  bg-gray-900 text-slate-600 font-bold uppercase tracking-wide w-10 text-center'>Or</span>
             <div className='h-1 w-full border-t-2 border-slate-600 mt-1'/>

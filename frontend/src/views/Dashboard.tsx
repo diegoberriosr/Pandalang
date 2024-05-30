@@ -16,7 +16,7 @@ import Courses from '../components/courses/Courses.tsx';
 
 // Context imports
 import { AuthContext } from '../context/AuthContext.tsx';
-
+import { StatusContext } from '../context/StatusContext.tsx';
 
 const Dashboard = () => {
 
@@ -25,29 +25,35 @@ const Dashboard = () => {
   const currentUrl = location.pathname;
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+  const { status} = useContext(StatusContext);
 
   useEffect( () => {
-    if (user.enrolled_courses.length === 0 && currentUrl !== '/enroll') navigate('/enroll');
-  }, [currentUrl])
+    console.log('x-zibit is here')
+    if (status.enrolled_courses.length === 0 && currentUrl !== '/enroll') navigate('/enroll');
+  }, [currentUrl]);
+
+  useEffect( () => {
+    if (!user) navigate('/');
+  });
 
   return (
       <div className='relative flex w-full'>
-        <Sidebar currentUrl={currentUrl}/>
-        <Routes>
-            <Route path='learn' element={<Learn/>}/>
-            <Route path='quests' element={<Quests/>}/>
-            <Route path='shop' element={<Shop/>}/>
-            <Route path='leaderboard' element={<Leaderboard/>}/>
-            <Route path='enroll' element={<Courses/>}/>
-          </Routes>
-        { currentUrl !== '/enroll' && 
-        <div className='sticky block inset-0 h-screen xl:pr-36 md:pr-10'>
-          <UserStatus/>
-          <Info/>
+          <Sidebar currentUrl={currentUrl}/>
+          <Routes>
+              <Route path='learn' element={null}/>
+              <Route path='quests' element={<Quests/>}/>
+              <Route path='shop' element={<Shop/>}/>
+              <Route path='leaderboard' element={<Leaderboard/>}/>
+              <Route path='enroll' element={<Courses/>}/>
+            </Routes>
+          { currentUrl !== '/enroll' && 
+          <div className='sticky block inset-0 h-screen xl:pr-36 md:pr-10'>
+            <UserStatus/>
+            <Info/>
+          </div>
+          }
+          <Bottombar currentUrl={currentUrl}/>
         </div>
-        }
-        <Bottombar currentUrl={currentUrl}/>
-      </div>
   )
 }
 

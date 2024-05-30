@@ -6,19 +6,22 @@ import Practice from './views/Practice.tsx';
 
 // Provider imports
 import AuthProvider from './context/AuthContext.tsx';
+import { StatusProvider } from './context/StatusContext.tsx';
 
 function App() {
   return (
-    <AuthProvider>
-        <Router>
-          <Routes>
-              <Route element={<Dashboard/>} path='/*'/>
-              <Route element={<Landing/>} path='/'/>
-              <Route element={<Practice practice/>} path='/practice'/>
-              <Route element={<Practice/>} path='/lesson/*'/>
-          </Routes>
-        </Router>
-    </AuthProvider>
+    <Router>
+      <StatusProvider>
+      <AuthProvider>
+            <Routes>
+                <Route element={<Dashboard/>} path='/*'/>
+                <Route element={<Landing/>} path='/'/>
+                <Route element={<Practice practice/>} path='/practice'/>
+                <Route element={<Practice/>} path='/lesson/*'/>
+            </Routes>
+       </AuthProvider>
+      </StatusProvider>
+    </Router>
   );
 }
 
