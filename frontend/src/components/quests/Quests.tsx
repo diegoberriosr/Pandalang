@@ -11,7 +11,7 @@ import ViewListElement from '../../views/ViewListElement.tsx';
 import ProgressBar from '../general/ProgressBar.tsx';
 
 // Context imports
-import { AuthContext } from '../../context/AuthContext.tsx';
+import { StatusContext } from '../../context/StatusContext.tsx';
 
 type Quest = {
   title : string,
@@ -29,7 +29,7 @@ const TEST_QUESTS : Quest[] = [
 
 const Quests = () => {
 
-  const { user } = useContext(AuthContext);
+  const { status } = useContext(StatusContext);
 
   return (
     <GeneralView header='Quests' subheader='Complete quests by earning xp' icon={Medal}>
@@ -39,7 +39,7 @@ const Quests = () => {
             <img src={Thunder} alt='thunder' className='w-8 h-8'/>
             <div className= 'w-full'>
               <h4 className='text-lg text-slate-800 font-bold'>{quest.title}</h4>
-              <ProgressBar width='w-full' percentage={ user.xp > quest.xp ? 100 : Math.ceil((user.xp/quest.xp) * 100)}/>
+              <ProgressBar width='w-full' percentage={ status.xp > quest.xp ? 100 : Math.ceil((status.xp/quest.xp) * 100)}/>
             </div>
           </div>
         </ViewListElement>)}
