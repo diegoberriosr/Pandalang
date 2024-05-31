@@ -45,7 +45,7 @@ const Shop = () => {
                     <span className='text-slate-700 text-lg font-semibold ml-5'>Refill 1 heart</span>
                 </div>
                 <Button size='sm' disabled={ status.hearts === 5 || status.available_xp < 20 || status.isPremium}
-                onClick = {() => handleRefill(20, 1, setLoading)}>    
+                onClick = {() => handleTransaction(20, 1, setLoading)}>    
                     { status.hearts === 5 ? 'Full' : <span className='flex items-center space-x-1'>
                             <img src={Thunder} alt='thunder' className='w-3 h-3'/>
                             <span>20 XP</span>
