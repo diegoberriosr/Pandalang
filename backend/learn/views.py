@@ -39,7 +39,13 @@ def get_profile_information(request):
     
     # Get requester basic data (hearts, available xp, active course, courses enrolled in)
     user = request.user
-    user_data = user.serialize()
+    last_completed_lesson = Lesson.objects.filter(section__course=request.user.active_course).filter(completed_by=request.user).order_by("-number_in_course").first()
+    current_lesson = 1
+
+    if last_completed_lesson:
+        current_lesson = last_completed_lesson.number_in_course + 1
+
+    user_data = user.serialize(request, current_lesson)
 
     return JsonResponse(user_data, safe=False)
 
@@ -63,7 +69,7 @@ def get_available_courses(request):
             raise Http404('ERROR : language not found')
         
     # Serialize available courses
-    course_data = [course.card_serialize() for course in courses]
+    course_data = [course.card_serialize(request) for course in courses]
 
     return JsonResponse(course_data, safe = False)
 
@@ -91,10 +97,10 @@ def enroll_in_course(request):
     request.user.active_course = course
     request.user.save()
 
-    # Get the last lesson completed by the requester inside the course
-    last_completed_lesson = Lesson.objects.filter(section__in=course.sections.all()).filter(completed_by__in=request.user.completed_lessons).order_by('-number_in_course').first() 
-
-    return JsonResponse( course.serialize(request.user, last_completed_lesson + 1), safe=False)
+    return JsonResponse(  {
+        'active' : course.serialize(request.user, 0, request),
+        'profile' : course.profile_serialize(request)
+        }, safe=False)
 
 
 @api_view(['PUT'])
@@ -176,10 +182,9 @@ def get_practice_lesson(request, course_id):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def complete_lesson(request):
+def complete_lesson(request, lesson_id):
     
     # Get lesson id and accuracy from the request's body.
-    lesson_id = json.loads(request.body).get('lesson_id')
     accuracy = json.loads(request.body).get('accuracy')
 
     # Search lesson by id, raise an exception if it does not exist.
@@ -216,7 +221,9 @@ def update_hearts(request):
     # Update user hearts.
     request.user.update_hearts(amount)
 
-    return JsonResponse({ 'message' : 'Hearts were successfully updated.'})
+    return JsonResponse({
+        'hearts' : request.user.hearts
+    })
 
 
 @api_view(['PUT'])
@@ -231,7 +238,10 @@ def refill_hearts(request):
     request.user.consume_available_xp(xp_cost)
     request.user.update_hearts(hearts_amount)
 
-    return JsonResponse({ 'message' : 'Transaction was successful.'})
+    return JsonResponse({
+        'hearts' : request.user.hearts,
+        'available_xp' : request.user.available_xp
+    })
 
 
 @api_view(['PUT'])
