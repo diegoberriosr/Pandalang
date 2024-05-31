@@ -39,7 +39,7 @@ type Status = {
 export const StatusContext = createContext<Status | undefined>(undefined);
 
 export const StatusProvider = ({ children }) => {
-    const [status, setStatus] = useState<Status | undefined>(undefined);
+    const [status, setStatus] = useState<Status | undefined>(localStorage.getItem('status') ? JSON.parse(localStorage.getItem('status')) : undefined);
     const navigate = useNavigate();
 
     const getStatus = (setLoading) => {
@@ -54,6 +54,7 @@ export const StatusProvider = ({ children }) => {
         defaultInstance('me', config)
         .then( res => {
             setStatus(res.data);
+            localStorage.setItem('status', JSON.stringify(res.data));
             setLoading(false);
             navigate('/learn');
         })
@@ -76,6 +77,7 @@ export const StatusProvider = ({ children }) => {
                 updatedStatus = {...updatedStatus, hearts : res.data.hearts};
                 return updatedStatus;
             });
+            localStorage.setItem('status', JSON.stringify(res.data));
             setLoading(false);
         })
         .catch( err => {
@@ -131,6 +133,7 @@ export const StatusProvider = ({ children }) => {
                 return updatedStatus;
             });
             setLoading(false);
+            navigate('/learn');
         })
         .catch( err => {
             console.log(err);

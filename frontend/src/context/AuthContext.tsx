@@ -19,8 +19,8 @@ type AuthContextType = {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const AuthProvider : React.FC<{ children : ReactNode }> = ({ children }) => {
-    const [user, setUser] = useState<User|undefined>(localStorage.getItem('user') ? localStorage.getItem('user') : null);
-    const [authTokens, setAuthTokens] = useState( localStorage.getItem('authTokens') ? localStorage.getItem('authToken') : null);
+    const [user, setUser] = useState<User|undefined>(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null);
+    const [authTokens, setAuthTokens] = useState( localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authToken')) : null);
     const navigate = useNavigate();
 
     const { getStatus } = useContext(StatusContext);
@@ -31,6 +31,7 @@ const AuthProvider : React.FC<{ children : ReactNode }> = ({ children }) => {
         .then( res => {
             setAuthTokens(res.data);
             setUser(jwtDecode(res.data.access));
+            localStorage.setItem('user', JSON.stringify(jwtDecode(res.data.access)));
             localStorage.setItem('authTokens', JSON.stringify(res.data));
             getStatus(setLoading);
         })

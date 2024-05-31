@@ -28,7 +28,6 @@ const Dashboard = () => {
   const { status} = useContext(StatusContext);
 
   useEffect( () => {
-    console.log('x-zibit is here')
     if (status.enrolled_courses.length === 0 && currentUrl !== '/enroll') navigate('/enroll');
   }, [currentUrl]);
 

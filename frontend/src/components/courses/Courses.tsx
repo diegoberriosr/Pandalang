@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import defaultInstance from '../../axios/defaultInstance.js';
 
 // Language flag icon imports
 import English from '../../assets/languages/english.png';
@@ -19,53 +20,39 @@ type Course = {
     flag : string
 };
 
-const TEST_COURSES : Course[] = [
-    {
-        id : 1,
-        title : 'English',
-        flag : English
-    },
-    {
-        id : 2,
-        title : 'Spanish',
-        flag : Spanish
-    },
-    {
-        id : 3,
-        title : 'French',
-        flag : French
-    },
-    {
-        id : 4,
-        title : 'German',
-        flag : German
-    },
-    {
-        id : 5,
-        title : 'Russian',
-        flag : Russian
-    },
-    {
-        id : 6,
-        title : 'Arabic',
-        flag : Arabic
-    },
-    {
-        id : 7,
-        title : 'Mandarin',
-        flag : Mandarin
-    }
-];
-
 const Courses = () => {
+  const [courses, setCourses] = useState<Course>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  
+
+  useEffect( () => {
+    defaultInstance.get('courses')
+    .then( res => {
+        console.log(res.data);
+        setCourses(res.data);
+        setLoading(false);
+    })
+    .catch( err => {
+        console.log(err);
+        setLoading(false);
+    });
+  }, []);
+
   return (
     <main className='py-5 flex-1 flex flex-col px-32'>
       <h3 className='text-2xl font-bold text-slate-800'>Language Courses</h3>
-      <div className='mt-5 flex flex-wrap gap-10'>
-        {TEST_COURSES.map( course => 
-            <CourseCard key={course.title} course={course}/>
-        )}
-      </div>
+      {
+        loading ?
+        <div className='w-full h-full flex items-center justify-center'>
+            <span>Loading</span>
+        </div>
+        :
+        <div className='mt-5 flex flex-wrap gap-10'>
+            {courses.map( course => 
+                <CourseCard key={course.title} course={course} setLoading={setLoading}/>
+            )}
+        </div>
+      }
     </main>
   )
 }
