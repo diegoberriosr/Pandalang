@@ -1,30 +1,15 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 // Icon imports
 import { CiSquarePlus } from "react-icons/ci";
 
-// Language flag icon imports
-import English from '../../assets/languages/english.png';
-import Spanish from '../../assets/languages/spanish.png';
-import French from '../../assets/languages/french.png';
-import German from '../../assets/languages/german.png';
-import Russian from '../../assets/languages/russian.png';
-import Arabic from '../../assets/languages/arabic.png';
-import Mandarin from '../../assets/languages/mandarin.png';
-
-const LANGUAGE_FLAGS = { // A list of language flags in .png format
-  'english' : English,
-  'spanish' : Spanish,
-  'french' : French,
-  'german' : German,
-  'russian' : Russian,
-  'arabic' : Arabic,
-  'mandarin' : Mandarin
-};
-
+// Context imports
+import { StatusContext } from '../../context/StatusContext.tsx';
 
 const CourseToggler = () => {
+  const [loading, setLoading] = useState(false);
+  const { status, handleChangeActiveCourse } = useContext(StatusContext);
   const navigate = useNavigate();
 
   const handleAddCourse = (e) => {
@@ -40,21 +25,19 @@ const CourseToggler = () => {
       </h5>
       <ul className='w-full max-h-[150px] overflow-y-auto'>
         <li className='flex items-center justify-start space-x-2 bg-sky-200/90 text-sky-400 font-bold h-14 hover:bg-sky-200 cursor-pointer'>
-            <img src={Russian} alt='russian flag' className='ml-4 w-8 h-8 rounded-sm'/>
-            <span>Russian</span>
+            <img src={status.active_course.flag} alt='russian flag' className='ml-4 w-8 h-8 rounded-sm'/>
+            <span>{status.active_course.title}</span>
         </li>
-        <li className='flex items-center justify-start space-x-2 text-slate-500 h-14 hover:bg-slate-200 cursor-pointer font-bold'>
-            <img src={French} alt='french flag' className='ml-4 w-8 h-8 rounded-sm'/>
-            <span>French</span>
-        </li>
-        <li className='flex items-center justify-start space-x-2 text-slate-500 h-14 hover:bg-slate-200 cursor-pointer font-bold'>
-            <img src={German} alt='french flag' className='ml-4 w-8 h-8 rounded-sm'/>
-            <span>German</span>
-        </li>
-        <li className='flex items-center justify-start space-x-2 text-slate-500 h-14 hover:bg-slate-200 cursor-pointer font-bold'>
-            <img src={Arabic} alt='french flag' className='ml-4 w-8 h-8 rounded-sm'/>
-            <span>Arabic</span>
-        </li>
+        {
+          status.enrolled_courses.filter( course => course.id !== status.active_course.id).map( course => 
+            <li key={course.id} className='flex items-center justify-start space-x-2 text-slate-500 h-14 hover:bg-slate-200 cursor-pointer font-bold'
+            onClick={() => handleChangeActiveCourse(course.id, setLoading)}>
+            <img src={course.flag} alt='french flag' className='ml-4 w-8 h-8 rounded-sm'/>
+            <span>{course.title}</span>
+            {loading && <span className='text-[3px]'>loading</span>}
+             </li>
+          )
+        }
       </ul>
       <button className='w-full h-12 flex items-center justify-start space-x-2.5 pl-4 hover:bg-slate-200 transition-colors uppercase
        text-slate-500 text-sm font-bold border-t-2 border-gray-300 rounded-b-lg'
