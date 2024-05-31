@@ -1,4 +1,4 @@
-import React, { useContext} from 'react';
+import React, { useContext } from 'react';
 
 // Icon imports
 import { IoMdArrowBack } from "react-icons/io";
@@ -10,8 +10,8 @@ import Section from './Section.tsx';
 import { StatusContext } from '../../context/StatusContext.tsx';
 
 const Learn = () => {
+  
   const { status } = useContext(StatusContext);
-
   if ( status.active_course === undefined) return; 
 
   return (
@@ -20,7 +20,7 @@ const Learn = () => {
         <IoMdArrowBack className='absolute left-0 text-xl cursor-pointer'/>
         { status.active_course.title }
       </header>
-      { status.active_course.sections.map( section => <Section section={section}/>)}
+      { status.active_course.sections.map( section => <Section key={section.id} section={section}/>)}
     </main>
   )
 }

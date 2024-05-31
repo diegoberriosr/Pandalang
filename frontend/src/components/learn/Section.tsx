@@ -9,12 +9,12 @@ import { Button } from '../general/ButtonCVA.tsx';
 import LessonButton from './LessonButton.tsx';
 
 // Context imports
-import { AuthContext } from '../../context/AuthContext.tsx';
+import { StatusContext } from '../../context/StatusContext.tsx';
 
 const Section = ({ section }) => {
-    const { user } = useContext(AuthContext);
+    console.log(section);
+    const { status } = useContext(StatusContext);
     const odd : boolean = (section.number_in_course % 2 ) > 0;
-    console.log(user.active_course.current_lesson);
   
   return (
     <section className='w-full flex flex-col items-center justify-center'>
@@ -35,8 +35,8 @@ const Section = ({ section }) => {
                 ${ (index + 1) % 2 === 0 ? `mt-6 ${odd ? 'ml-20' : 'mr-20'} ` : ''}
                 ${ (index + 1) % 3 === 0 ? `mt-6 ${odd ? 'ml-32' : ' mr-32'} ` : ''} 
                 ${ (index + 1) % 5 === 0 ? 'mt-6' : ''}
-                `} variant={lesson.number_in_course > user.active_course.current_lesson ? 'unavailable' : section.variant} disabled={lesson.number_in_course > user.active_course.current_lesson} 
-                current={lesson.number_in_course === user.active_course.current_lesson} review={lesson.review}/>
+                `} variant={lesson.number_in_course > status.active_course.current_lesson ? 'unavailable' : section.variant} disabled={lesson.number_in_course > status.active_course.current_lesson} 
+                current={lesson.number_in_course === status.active_course.current_lesson} final={lesson.type === 'final'}/>
              )}
         </ul>
     </section>

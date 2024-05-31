@@ -39,7 +39,7 @@ const Dashboard = () => {
       <div className='relative flex w-full'>
           <Sidebar currentUrl={currentUrl}/>
           <Routes>
-              <Route path='learn' element={null}/>
+              <Route path='learn' element={<Learn/>}/>
               <Route path='quests' element={<Quests/>}/>
               <Route path='shop' element={<Shop/>}/>
               <Route path='leaderboard' element={<Leaderboard/>}/>

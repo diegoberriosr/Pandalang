@@ -10,6 +10,7 @@ type Lesson = {
 type Section = {
     id : number,
     number_in_course : number,
+    variant : string,
     description : string,
     lessons : Lesson[]
 }
@@ -41,6 +42,8 @@ export const StatusContext = createContext<Status | undefined>(undefined);
 export const StatusProvider = ({ children }) => {
     const [status, setStatus] = useState<Status | undefined>(localStorage.getItem('status') ? JSON.parse(localStorage.getItem('status')) : undefined);
     const navigate = useNavigate();
+
+    console.log(status);
 
     const getStatus = (setLoading) => {
         const token = JSON.parse(localStorage.getItem('authTokens'));
