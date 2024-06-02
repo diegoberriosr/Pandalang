@@ -43,8 +43,6 @@ export const StatusProvider = ({ children }) => {
     const [status, setStatus] = useState<Status | undefined>(localStorage.getItem('status') ? JSON.parse(localStorage.getItem('status')) : undefined);
     const navigate = useNavigate();
 
-    console.log(status);
-
     const getStatus = (setLoading) => {
         const token = JSON.parse(localStorage.getItem('authTokens'));
         const config = {
@@ -109,7 +107,9 @@ export const StatusProvider = ({ children }) => {
         })
     };
 
-    const handleChangeActiveCourse = (courseId, setLoading) => {
+    const handleChangeActiveCourse = (courseId, loading, setLoading) => {
+        if (loading) return;
+
         setLoading(true);
         defaultInstance.put('change', {course_id : courseId})
         .then( res => {
@@ -144,15 +144,20 @@ export const StatusProvider = ({ children }) => {
         })
      };
 
-     const handleCompleteLesson = (lessonId, accuracy, setEarnedXp, setLoading) => {
-        setLoading(true);
+     const handleCompleteLesson = (lessonId, accuracy, setXp, setLoading) => {
         defaultInstance.post(`lesson/complete/${lessonId}`, {accuracy : accuracy})
         .then( res => {
-            setEarnedXp(res.data);
             setStatus( prevStatus => {
                 let updatedStatus = {...prevStatus};
-                updatedStatus = {...prevStatus, xp : status.xp + res.data, available_xp : status.available_xp + res.data};
-            })
+                updatedStatus = {...updatedStatus, 
+                    xp : status.xp + res.data, 
+                    available_xp : status.available_xp + res.data,
+                };
+                updatedStatus.active_course.current_lesson++;
+
+                return updatedStatus;
+            });
+            setXp(res.data);
             setLoading(false);
         })
         .catch( err => {

@@ -49,6 +49,7 @@ def get_profile_information(request):
 
     return JsonResponse(user_data, safe=False)
 
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_available_courses(request):
@@ -121,9 +122,13 @@ def change_active_course(request):
     request.user.save()
 
     # Get the last lesson completed by the requester inside the course
-    last_completed_lesson = Lesson.objects.filter(section__in=course.sections.all()).filter(completed_by__in=request.user.completed_lessons).order_by('-number_in_course').first() 
+    last_completed_lesson = Lesson.objects.filter(section__course=request.user.active_course).filter(completed_by=request.user).order_by('-number_in_course').first()
+    highest_number_in_course = 0
 
-    return JsonResponse( course.serialize(request.user, last_completed_lesson + 1), safe=False)
+    if last_completed_lesson:
+        highest_number_in_course = last_completed_lesson.number_in_course
+
+    return JsonResponse( course.serialize(request.user, highest_number_in_course + 1, request), safe=False)
 
 
 @api_view(['GET'])
@@ -141,19 +146,29 @@ def get_lesson(request, lesson_id):
         return HttpResponseForbidden('ERROR: user is not enrolled in this course or does not have this course as active')
     
     # Number of exercises is equal to the number 
-    # of exercises associated with the lesson * 4.
-    exercises = Lesson.translations.all() * 4
+    # of translations associated with the lesson * 4.
+    translations = Lesson.translations.all() * 4
 
-    # Randomly add a type to each exercise
-    exercises = assign_exercise_type(exercises)
+    # Randomly add an an exercise type an a set of options to each translation
+    translations= assign_exercise_type(translations)
+    exercises = []
+
+    # Serialize data.
+    for translation in translations:
+        reverse = False
+
+        if translation.type == 'with_help_origin' or translation.type == 'without_help_origin':
+            reverse = True
+
+        exercises.append({
+            'answer' : translation.serialize(reverse),
+            'words' : sample([pair.serialize(reverse) for pair in translations if pair != translation], 4)
+        })
     
     # Randomize order of exercises.
     shuffle(exercises)
 
-    # Serialize data.
-    exercise_data = [exercise.serialize() for exercise in exercises]
-
-    return JsonResponse(exercise_data, safe=False)
+    return JsonResponse(exercises, safe=False)
 
 
 @api_view(['GET'])

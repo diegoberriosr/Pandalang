@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react'
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useContext, useEffect } from 'react'
+import { useNavigate, } from 'react-router-dom';
 
 // SFX imports
 import Win from '../../assets/sounds/win.mp3';
@@ -12,32 +12,44 @@ import Dart from '../../assets/elements/dart.png';
 // Component imports
 import FinishCard from './FinishCard.tsx';
 import { Button } from '../general/ButtonCVA.tsx';
+import { MoonLoader } from 'react-spinners';
 
 // Context imports
-import { AuthContext } from '../../context/AuthContext.tsx';
+import { StatusContext } from '../../context/StatusContext.tsx';
 
-const LessonCompleted = ({ attempts, correctAnswers }) => {
-  const { user } = useContext(AuthContext); 
-  const [baseXp, setBaseXp] = useState<number>(80); // Amount of base xp granted for completing a lesson without any mistakes.
+const LessonCompleted = ({ lessonId, attempts, correctAnswers }) => {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [xp, setXp] = useState<number>(0); // Total xp gained from completing the lesosn.
+  const { status, handleCompleteLesson } = useContext(StatusContext); 
+
   const accuracy = correctAnswers/attempts; // Used to compute total xp learned from lesson ( accuracy * base xp).
   const winSFX = new Audio(Win);
   const navigate = useNavigate();
   
   winSFX.play();
 
+  useEffect( () => {
+    handleCompleteLesson(lessonId, accuracy, setXp, setLoading)
+  }, []);
+
   return (
     <div className='w-screen h-screen bg-white flex flex-col justify-center items-center text-slate-800 font-bold text-2xl pb-14'> 
+    { loading && 
+      <div className='w-full h-full bg-white flex items-center justify-center'>
+        <MoonLoader loading={loading} size={window.innerHeight /2} color='#22c55e'/>
+      </div>
+    }
       <h5 className='text-8xl'>🎊</h5>
       <h5 className='mt-2.5'>Great job!</h5>
       <h5 className='mt-2.5'>You've completed the lesson.</h5>
       <div className='mt-10 flex flex-wrap gap-10 justify-center items-center'>
         <FinishCard color='bg-yellow-500' title='Total xp'>
             <img src={Thunder} alt='thunder' className='w-5 h-5'/>
-            <span className='text-yellow-500'>{Math.ceil(accuracy * baseXp)}</span>
+            <span className='text-yellow-500'>{xp}</span>
         </FinishCard>
         <FinishCard color='bg-red-500' title='Remaining hearts'>
             <img src={Heart} alt='heart' className='w-5 h-5'/>
-            <span className='text-red-500'>{user.hearts}</span>
+            <span className='text-red-500'>{status.hearts}</span>
         </FinishCard>
         <FinishCard color='bg-sky-400' title='Accuracy'>
             <img src={Dart} alt='dart' className='w-5 h-5'/>

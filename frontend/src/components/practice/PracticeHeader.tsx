@@ -11,26 +11,28 @@ import InfinityBlue from '../../assets/elements/infinity_blue.png';
 import ProgressBar from '../general/ProgressBar.tsx';
 
 // Context imports
-import { AuthContext } from '../../context/AuthContext.tsx';
+import { StatusContext } from '../../context/StatusContext.tsx';
 
 const PracticeHeader = ({ practice, progress, setQuitModal}) => {
   
-  const { user } = useContext(AuthContext);
+  const { status } = useContext(StatusContext);
+  
+  if (!status) return;
 
   return (
     <header className='w-screen flex items-center justify-between h-10 px-2.5 sm:px-10 md:px-20 lg:px-40'>
         <IoIosClose className='text-4xl text-gray-400' onClick={() => setQuitModal(true)}/>
         <ProgressBar width='w-[70%] sm:w-[90%]' percentage={progress}/>
         <figure className='flex items-center space-x-2.5'>
-            <img src={ user.isPremium ? BlueHeart : Heart} alt='heart' className='w-5 h-5'/>
-            { user.isPremium ?
+            <img src={ status.isPremium ? BlueHeart : Heart} alt='heart' className='w-5 h-5'/>
+            { status.isPremium ?
                 <img src={InfinityBlue} alt='infinity' className='w-5 h-5'/>
                 :
                 <span className='text-red-500'>
                     { practice ?
                     <img src={Infinity} alt='infinity' className='w-5 h-5'/>
                     :
-                    user.hearts
+                    status.hearts
                     }
                 </span>
             }

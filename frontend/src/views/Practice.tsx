@@ -1,70 +1,43 @@
 import React, { useState, useContext, useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router-dom';
+import defaultInstance from '../axios/defaultInstance.js';
 
 // Component imports
 import PracticeHeader from '../components/practice/PracticeHeader.tsx';
 import PracticeFooter from '../components/practice/PracticeFooter.tsx';
 import Modal from '../components/practice/Modal.tsx';
 import ExerciseWithoutHelp from '../components/practice/ExerciseWithoutHelp.tsx';
+import ExerciseWithHelp from '../components/practice/ExerciseWithHelp.tsx';
 import OutOfHearts from '../components/practice/OutOfHearts.tsx';
 import QuitPractice from '../components/practice/QuitPractice.jsx';
 import PracticeLesson from '../components/practice/PracticeLesson.tsx';
 import LessonCompleted from '../components/practice/LessonCompleted.tsx';
+import { MoonLoader } from 'react-spinners';
 
 // Context imports
 import { AuthContext } from '../context/AuthContext.tsx';
+
 
 type Word = {
     id : number,
     word : string,
     translation : string,
-    language : string,
-    slug ? : string
+    slug ? : string,
+    sound ? : string
 }
 
 type Exercise = {
     words : Word[],
-    answer : Word
+    answer : Word,
+    type : string
 };
 
-const TEST_EXERCISES : Exercise [] = [
-  {
-    words : [
-      {
-        id : 1,
-        word : 'Haus',
-        translation : 'House',
-        language : 'german',
-        slug : ''
-      },
-      {
-        id : 2,
-        word : 'Kaese',
-        translation : 'Cheese',
-        language : 'german',
-        slug : ''
-      },
-      {
-        id : 3,
-        word : 'Hund',
-        translation : 'Dog',
-        language : 'german',
-        slug : ''
-      },
-    ],
-    answer :       {
-      id : 2,
-      word : 'Kaese',
-      translation : 'Cheese',
-      language : 'german',
-      slug : ''
-    },
-  }
-]
+
 
 const Practice = ({ practice }) => {
   
-  const [loading, setLoading] = useState<boolean>(false); // Loading state.
-  const [exercises, setExercises] = useState<Exercise[]>(TEST_EXERCISES); // A list of exercises.
+  const [loading, setLoading] = useState<boolean>(true); // Loading state.
+  const [exercises, setExercises] = useState<Exercise[]>([]); // A list of exercises.
   const [selected, setSelected] = useState<Word | undefined>(undefined); // Selected option on an exercise.
   const [state, setState] = useState<string>('waiting'); // Keeps track of submission state( waiting for submission, correct submission, and wrong submission);
   const [progress, setProgress ] = useState<number>(0); // Overall progress.
@@ -73,6 +46,23 @@ const Practice = ({ practice }) => {
   const [quitModal, setQuitModal] = useState<boolean>(false); // Used for displaying the exit confirmation modal.
   const [practiceLessonModal, setPracticeLessonModal] = useState<boolean>( practice ? true : false); // Used to display a modal when starting a practice lesson. 
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const lessonId = useParams();
+
+  useEffect( () => {
+    if (!user) navigate("/");
+
+    defaultInstance(`lesson/${lessonId}`)
+    .then( res => {
+      setExercises(res.data);
+      setLoading(false);
+    })
+    .catch( err => {
+      console.log(err);
+      navigate("/learn");
+    })
+  }, []);
 
   useEffect( () => {
     if(!loading){
@@ -81,10 +71,11 @@ const Practice = ({ practice }) => {
     }
   }, [exercises]);
 
+
   return (
     <>
     <Modal isVisible={exercises.length === 0 && !loading}>
-      <LessonCompleted attempts={attempts} correctAnswers={correctAnswers}/>
+      <LessonCompleted lessonId={lessonId} attempts={attempts} correctAnswers={correctAnswers}/>
     </Modal>
     { !loading &&
       <Modal isVisible={practiceLessonModal}>
@@ -99,8 +90,12 @@ const Practice = ({ practice }) => {
     </Modal>
     <PracticeHeader practice={practice} progress={progress} setQuitModal={setQuitModal}/>
     <main className='mt-20 w-screen flex-1 flex flex-col items-center justify-center px-2.5 md:px-5 lg:px-10'>
-      { exercises.length > 0 && !loading &&
+      { loading && <MoonLoader loading={loading} size={window.innerHeight/5} color="#22c55e"/>}
+      { exercises.length > 0 && !loading && ( exercises[0].type === 'without_help_target' || exercises[0].type === 'without_help_origin') && 
         <ExerciseWithoutHelp exercise={exercises[0]} state={state} selected={selected} setSelected={setSelected}/>
+      }
+      { exercises.length > 0 && !loading && ( exercises[0].type === 'with_help_target' || exercises[0].type === 'with_help_origin') && 
+        <ExerciseWithHelp exercise={exercises[0]} state={state} selected={selected} setSelected={setSelected}/>
       }
     </main>
     <PracticeFooter practice={practice} selected={selected} exercises={exercises} 

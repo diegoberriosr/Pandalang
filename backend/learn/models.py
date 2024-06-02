@@ -374,10 +374,10 @@ class Translation(models.Model):
     def __str__(self):
         return f'{self.id} {self.target.word} ({self.target.language.name}) -> {self.origin.word} ({self.origin.language.name})'
     
-    def serialize(self):
+    def serialize(self, reverse):
         return {
             'id' : self.id,
-            'target' : self.target.word,
-            'origin' : self.origin.word,
+            'word' : self.target.word if not reverse else self.origin.word,
+            'translation' : self.origin.word if not reverse else self.target.word,
             'type' : self.type
         }

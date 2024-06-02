@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 // Icon imports
 import { CiSquarePlus } from "react-icons/ci";
 
+// Component imports
+import { MoonLoader } from 'react-spinners';
+
 // Context imports
 import { StatusContext } from '../../context/StatusContext.tsx';
 
@@ -20,6 +23,12 @@ const CourseToggler = () => {
   
   return (
     <div className='w-full md:w-[200px]'>
+      {
+        loading &&
+        <div className='w-full h-full backdrop-blur-md bg-opacity-50 flex items-center justify-center'>
+          <MoonLoader loading={loading} size={75} color='#22c55e'/>
+        </div>
+      }
       <h5 className='px-4 py-2 uppercase text-slate-500 font-bold border-b-2 border-gray-300 text-sm'>
         My courses
       </h5>
@@ -31,7 +40,7 @@ const CourseToggler = () => {
         {
           status.enrolled_courses.filter( course => course.id !== status.active_course.id).map( course => 
             <li key={course.id} className='flex items-center justify-start space-x-2 text-slate-500 h-14 hover:bg-slate-200 cursor-pointer font-bold'
-            onClick={() => handleChangeActiveCourse(course.id, setLoading)}>
+            onClick={(e) => handleChangeActiveCourse(course.id, loading, setLoading)}>
             <img src={course.flag} alt='french flag' className='ml-4 w-8 h-8 rounded-sm'/>
             <span>{course.title}</span>
             {loading && <span className='text-[3px]'>loading</span>}

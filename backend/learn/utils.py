@@ -28,7 +28,9 @@ def assign_exercise_type(exercises):
         elif i == 4:
             exercise.type = 'without_help_origin' # Translate (hard) to origin language.
         else:
-            exercise.type = 'listening' # Listening practice in target language.
+            exercise.type='with_help_target'
+            #exercise.type = 'listening' # Listening practice in target language.
+        
 
     return exercises
 
