@@ -10,6 +10,7 @@ import Thunder from '../../assets/elements/thunder.png';
 
 // Component imports
 import { Button } from '../general/ButtonCVA.tsx';
+import { MoonLoader } from 'react-spinners';
 import GeneralView from '../../views/GeneralView.tsx';
 import ViewListElement from '../../views/ViewListElement.tsx';
 
@@ -33,7 +34,7 @@ const Shop = () => {
                 </div>
                 <Button size='sm' disabled={ status.hearts === 5 || status.available_xp < 50 || status.isPremium}
                     onClick = {() => handleTransaction(50, 5- status.hearts, setLoading)}>
-                    { status.hearts === 5 ? 'Full' : <span className='flex items-center space-x-1'>
+                    { status.hearts === 5 && !loading ? 'Full' : <span className='flex items-center space-x-1'>
                             <img src={Thunder} alt='thunder' className='w-3 h-3'/>
                             <span>50 XP</span>
                         </span>}

@@ -17,7 +17,7 @@ function App() {
                 <Route element={<Dashboard/>} path='/*'/>
                 <Route element={<Landing/>} path='/'/>
                 <Route element={<Practice practice/>} path='/practice'/>
-                <Route element={<Practice/>} path='/lesson/*'/>
+                <Route element={<Practice/>} path='/lesson/:lessonId'/>
             </Routes>
        </AuthProvider>
       </StatusProvider>

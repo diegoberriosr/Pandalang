@@ -13,7 +13,7 @@ const HoverMenu = ({children, menuItems}) => {
       </div>
       { // Pop up menu
         isHovered &&
-        <div className='absolute left-0 md:left-auto md:top-auto md:-bottom-36 bg-white border-b-2 md:border-2 border-gray-200 md:rounded-xl w-screen md:w-auto z-50'>
+        <div className='absolute left-0 md:left-auto md:top-14 bg-white border-b-2 md:border-2 border-gray-200 md:rounded-xl w-screen md:w-auto z-50'>
           <div className='absolute -top-2 right-1/2 border-x-8 border-b-8 border-x-transparent border-slate-200'/>
           {menuItems}
         </div>

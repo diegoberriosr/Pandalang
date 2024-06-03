@@ -15,7 +15,7 @@ import LessonCompleted from '../components/practice/LessonCompleted.tsx';
 import { MoonLoader } from 'react-spinners';
 
 // Context imports
-import { AuthContext } from '../context/AuthContext.tsx';
+import { StatusContext } from '../context/StatusContext.tsx';
 
 
 type Word = {
@@ -45,15 +45,15 @@ const Practice = ({ practice }) => {
   const [attempts, setAttempts] = useState<number>(0); // Keeps track of total attempts (also used to calculate lesson accuracy).
   const [quitModal, setQuitModal] = useState<boolean>(false); // Used for displaying the exit confirmation modal.
   const [practiceLessonModal, setPracticeLessonModal] = useState<boolean>( practice ? true : false); // Used to display a modal when starting a practice lesson. 
-  const { user } = useContext(AuthContext);
+  const { status } = useContext(StatusContext);
   const navigate = useNavigate();
 
-  const lessonId = useParams();
-
+  const params = useParams();
+  
   useEffect( () => {
-    if (!user) navigate("/");
+    if (!status) navigate("/");
 
-    defaultInstance(`lesson/${lessonId}`)
+    defaultInstance( practice ? `practice/${status.active_course.id}` : `lesson/${params.lessonId}`)
     .then( res => {
       setExercises(res.data);
       setLoading(false);
@@ -63,6 +63,7 @@ const Practice = ({ practice }) => {
       navigate("/learn");
     })
   }, []);
+
 
   useEffect( () => {
     if(!loading){
@@ -75,21 +76,21 @@ const Practice = ({ practice }) => {
   return (
     <>
     <Modal isVisible={exercises.length === 0 && !loading}>
-      <LessonCompleted lessonId={lessonId} attempts={attempts} correctAnswers={correctAnswers}/>
+      <LessonCompleted practice={practice} lessonId={params.lessonId} attempts={attempts} correctAnswers={correctAnswers}/>
     </Modal>
     { !loading &&
       <Modal isVisible={practiceLessonModal}>
         <PracticeLesson setPracticeLessonModal={setPracticeLessonModal}/>
       </Modal>
     }
-    <Modal isVisible={user.hearts === 0}>
+    <Modal isVisible={status.hearts === 0}>
         <OutOfHearts/>
     </Modal>
     <Modal isVisible={quitModal}>
         <QuitPractice setQuitModal={setQuitModal}/>
     </Modal>
     <PracticeHeader practice={practice} progress={progress} setQuitModal={setQuitModal}/>
-    <main className='mt-20 w-screen flex-1 flex flex-col items-center justify-center px-2.5 md:px-5 lg:px-10'>
+    <main className='mt-10 sm:mt-20 w-screen flex-1 flex flex-col items-center justify-center px-2.5 md:px-5 lg:px-10'>
       { loading && <MoonLoader loading={loading} size={window.innerHeight/5} color="#22c55e"/>}
       { exercises.length > 0 && !loading && ( exercises[0].type === 'without_help_target' || exercises[0].type === 'without_help_origin') && 
         <ExerciseWithoutHelp exercise={exercises[0]} state={state} selected={selected} setSelected={setSelected}/>

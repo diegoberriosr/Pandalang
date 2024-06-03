@@ -3,7 +3,7 @@ from django.http import JsonResponse, HttpResponse, Http404, HttpResponseForbidd
 from django.db.models import Sum
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from .models import User, Language, Course, Lesson, Session
+from .models import User, Language, Course, Lesson, Session, Translation
 
 import json
 from random import shuffle, sample
@@ -145,26 +145,38 @@ def get_lesson(request, lesson_id):
     if lesson.section.course not in request.user.enrolled_courses.all() or lesson.section.course != request.user.active_course:
         return HttpResponseForbidden('ERROR: user is not enrolled in this course or does not have this course as active')
     
-    # Number of exercises is equal to the number 
-    # of translations associated with the lesson * 4.
-    translations = Lesson.translations.all() * 4
+    # Get all the translations associated with the lesson
+    if lesson.type != 'final':
+        translations = lesson.translations.all()
+    else:
+        translations = sample(list(Translation.objects.filter(lesson_section=lesson.section).all()), 5) # If lesson is a final review, get 5 translations associated with the review lesson's section
+
+    exercises = []
 
     # Randomly add an an exercise type an a set of options to each translation
-    translations= assign_exercise_type(translations)
-    exercises = []
+    translations = assign_exercise_type(list(translations) * 4)
 
     # Serialize data.
     for translation in translations:
-        reverse = False
+        answer = translation.target
+        equivalent = translation.origin.word
+        words = sample([pair.target.serialize(translation=pair.origin.word) for pair in translations if pair.target != answer], 3) + [answer.serialize(translation=equivalent)]
 
         if translation.type == 'with_help_origin' or translation.type == 'without_help_origin':
-            reverse = True
+            answer = translation.origin
+            equivalent = translation.target.word
+            words = sample([pair.origin.serialize(translation=pair.target.word) for pair in translations if pair.origin != answer], 3) + [answer.serialize(translation=equivalent)]
+
+
+        shuffle(words)
 
         exercises.append({
-            'answer' : translation.serialize(reverse),
-            'words' : sample([pair.serialize(reverse) for pair in translations if pair != translation], 4)
+            'answer' : answer.serialize(translation=equivalent),
+            'words' : words,
+            'type' : translation.type
         })
-    
+
+
     # Randomize order of exercises.
     shuffle(exercises)
 
@@ -184,15 +196,43 @@ def get_practice_lesson(request, course_id):
         return HttpResponseForbidden('ERROR: user is not enrolled in this course or does not have this course as active')
 
     # Get translations for practice lesson.
-    exercises = sample(request.user.seen_translations.filter(lesson__section__course__id=course_id), 4) # Get 4 random seen translations.
+    translations = request.user.seen_translations.filter(lesson__section__course__id=course_id)
 
-    # Assign a random type to each exercise.
-    exercises = assign_exercise_type(exercises)
+    if translations.count() < 4:
+        return HttpResponseForbidden('ERROR : requester cannot take practice lessons since they do not know enough words.')
+
+    translations = sample(list(translations), 4) # Get 4 random seen translations.
+        
+    # Randomly add an an exercise type an a set of options to each translation
+    translations = assign_exercise_type(list(translations) * 4)
+
+    exercises =[]
 
     # Serialize data.
-    exercise_data = [exercise.serialize() for exercise in exercises]
+    for translation in translations:
+        answer = translation.target
+        equivalent = translation.origin.word
+        words = sample([pair.target.serialize(translation=pair.origin.word) for pair in translations if pair.target != answer], 3) + [answer.serialize(translation=equivalent)]
 
-    return JsonResponse(exercise_data, safe=False)
+    if translation.type == 'with_help_origin' or translation.type == 'without_help_origin':
+        answer = translation.origin
+        equivalent = translation.target.word
+        words = sample([pair.origin.serialize(translation=pair.target.word) for pair in translations if pair.origin != answer], 3) + [answer.serialize(translation=equivalent)]
+
+    shuffle(words)
+
+    exercises.append({
+        'answer' : answer.serialize(translation=equivalent),
+        'words' : words,
+        'type' : translation.type
+     })
+
+
+    # Randomize order of exercises.
+    shuffle(exercises)
+
+
+    return JsonResponse(exercises, safe=False)
 
 
 @api_view(['POST'])
@@ -201,6 +241,20 @@ def complete_lesson(request, lesson_id):
     
     # Get lesson id and accuracy from the request's body.
     accuracy = json.loads(request.body).get('accuracy')
+    practice = json.loads(request.body).get('practice')
+
+    # Check if a practice lesson was completed
+    if practice.lower() == 'true':
+        xp = accuracy * 5
+        request.user.update_xp(xp) # Practice lessons have a base xp of 5 points.
+        
+        if request.user.hearts < 5: # Refill 1 heart for completing a practice lesson (only if applicable).
+            request.user.update_hearts(1)
+        
+        return JsonResponse({
+            'xp' : xp,
+            'completed' : False
+        }, safe=False)
 
     # Search lesson by id, raise an exception if it does not exist.
     try:
@@ -222,8 +276,18 @@ def complete_lesson(request, lesson_id):
     # If the number of sessions associated with the lesson and the user exceeds the number of cycles of the session, mark the lesson as completed by the user.
     if Session.objects.filter(lesson=lesson).filter(user=request.user).count() >= lesson.cycles and request.user not in lesson.completed_by.all():
         lesson.completed_by.add(request.user)
+        lesson.save()
 
-    return JsonResponse(new_session.earned_xp)
+    # Mark all translations associated with the lesson as seen
+    for translation in lesson.translations.all():
+        translation.seen_by.add(request.user) if request.user not in translation.seen_by.all() else None
+
+    last_completed_lesson = Lesson.objects.filter(section__course=request.user.active_course).filter(completed_by=request.user).order_by("-number_in_course").first()
+
+    return JsonResponse({
+        'xp' : new_session.earned_xp,
+        'completed' : request.user in lesson.completed_by.all() and lesson == last_completed_lesson
+        }, safe=False)
 
 
 @api_view(['PUT'])

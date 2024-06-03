@@ -76,9 +76,9 @@ export const StatusProvider = ({ children }) => {
             setStatus( prevStatus => {
                 let updatedStatus = {...prevStatus};
                 updatedStatus = {...updatedStatus, hearts : res.data.hearts};
+                localStorage.setItem("status", JSON.stringify(updatedStatus));
                 return updatedStatus;
             });
-            localStorage.setItem('status', JSON.stringify(res.data));
             setLoading(false);
         })
         .catch( err => {
@@ -88,7 +88,7 @@ export const StatusProvider = ({ children }) => {
     };
 
     const handleTransaction = (xpAmount, heartsAmount, setLoading) => {
-        if (heartsAmount + user.hearts > 5 || user.available_xp < xpAmount) return // Do not process if not enough available_xp or total amount of hearts will be increased over 5.
+        if (heartsAmount + status.hearts > 5 || status.available_xp < xpAmount) return // Do not process if not enough available_xp or total amount of hearts will be increased over 5.
 
         setLoading(true);
         defaultInstance.put('hearts/refill', { hearts_amount : heartsAmount, xp_cost : xpAmount})
@@ -96,6 +96,7 @@ export const StatusProvider = ({ children }) => {
             setStatus( prevStatus => {
                 let updatedStatus = {...prevStatus};
                 updatedStatus = {...updatedStatus, hearts : res.data.hearts, available_xp : res.data.available_xp };
+                localStorage.setItem("status", JSON.stringify(updatedStatus));
                 return updatedStatus;
             });
 
@@ -116,6 +117,7 @@ export const StatusProvider = ({ children }) => {
             setStatus( prevStatus => {
                 let updatedStatus = {...prevStatus};
                 updatedStatus = {...updatedStatus, active_course : res.data};
+                localStorage.setItem("status", JSON.stringify(updatedStatus));
                 return updatedStatus;
             })
             setLoading(false);
@@ -133,6 +135,7 @@ export const StatusProvider = ({ children }) => {
             setStatus( prevStatus => {
                 let updatedStatus = {...prevStatus};
                 updatedStatus = {...updatedStatus, active_course : res.data.active, courses : updatedStatus.courses?.concat([res.data.profile])}
+                localStorage.setItem("status", JSON.stringify(updatedStatus));
                 return updatedStatus;
             });
             setLoading(false);
@@ -144,21 +147,24 @@ export const StatusProvider = ({ children }) => {
         })
      };
 
-     const handleCompleteLesson = (lessonId, accuracy, setXp, setLoading) => {
-        defaultInstance.post(`lesson/complete/${lessonId}`, {accuracy : accuracy})
+     const handleCompleteLesson = (practice, lessonId, accuracy, setXp, setLoading, winSFX) => {
+        defaultInstance.post(`lesson/complete/${lessonId}`, {accuracy : accuracy, practice : practice})
         .then( res => {
             setStatus( prevStatus => {
                 let updatedStatus = {...prevStatus};
                 updatedStatus = {...updatedStatus, 
-                    xp : status.xp + res.data, 
-                    available_xp : status.available_xp + res.data,
+                    xp : status.xp + res.data.xp, 
+                    available_xp : status.available_xp + res.data.xp,
                 };
-                updatedStatus.active_course.current_lesson++;
+
+                if (res.data.completed === 'true') updatedStatus.active_course.current_lesson = updatedStatus.active_course.current_lesson + 1;
+                localStorage.setItem("status", JSON.stringify(updatedStatus));
 
                 return updatedStatus;
             });
-            setXp(res.data);
+            setXp(res.data.xp);
             setLoading(false);
+            winSFX.play();
         })
         .catch( err => {
             console.log(err);
@@ -171,7 +177,7 @@ export const StatusProvider = ({ children }) => {
         setStatus : setStatus,
         getStatus : getStatus,
         handleUpdateHearts : handleUpdateHearts,
-        hadleTransaction : handleTransaction,
+        handleTransaction : handleTransaction,
         handleChangeActiveCourse : handleChangeActiveCourse,
         handleEnrollCourse : handleEnrollCourse,
         handleCompleteLesson : handleCompleteLesson

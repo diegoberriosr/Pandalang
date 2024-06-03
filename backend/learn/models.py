@@ -358,9 +358,20 @@ class Word(models.Model):
     id = models.AutoField(primary_key=True) 
     language = models.ForeignKey(Language, on_delete=models.CASCADE, related_name='words') # Specifies the language of the word.
     word = models.TextField() # The word itself.
+    sound = models.TextField(null=True, blank=True) # A reference to the audio file containing its pronounciation.
+    slug = models.TextField(null =True, blank=True) # A reference to an image depiction of the word.
     
     def __str__(self):
         return f'{self.id}. {self.word} ({self.language.name})'
+    
+    def serialize(self, translation):
+        return {
+            'id' : self.id,
+            'word' : self.word,
+            'translation' : translation,
+            'sound' : self.sound,
+            'slug' : self.slug
+        }
 
 
 class Translation(models.Model):
@@ -369,10 +380,10 @@ class Translation(models.Model):
     lesson = models.ManyToManyField(Lesson, related_name='translations') # Represents the lessons associated with the translation.
     target = models.ForeignKey(Word, on_delete=models.CASCADE, related_name='target_translations', db_index = True) # The meaning of the word in the target language
     origin = models.ForeignKey(Word, on_delete= models.CASCADE, related_name='origin_translations', db_index = True) # The meaning of the word in the origin language
-    seen_by = models.ManyToManyField(User, related_name='seen_translations', db_index=True) # Represents how many users have seen/encountered this word in a leson. 
+    seen_by = models.ManyToManyField(User, related_name='seen_translations', blank=True, null=True, db_index=True) # Represents how many users have seen/encountered this word in a leson. 
     
     def __str__(self):
-        return f'{self.id} {self.target.word} ({self.target.language.name}) -> {self.origin.word} ({self.origin.language.name})'
+        return f'{self.id}.{self.target.word} ({self.target.language.name}) -> {self.origin.word} ({self.origin.language.name})'
     
     def serialize(self, reverse):
         return {

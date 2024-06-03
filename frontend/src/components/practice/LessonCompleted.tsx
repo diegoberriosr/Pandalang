@@ -17,25 +17,24 @@ import { MoonLoader } from 'react-spinners';
 // Context imports
 import { StatusContext } from '../../context/StatusContext.tsx';
 
-const LessonCompleted = ({ lessonId, attempts, correctAnswers }) => {
+const LessonCompleted = ({ practice, lessonId, attempts, correctAnswers }) => {
   const [loading, setLoading] = useState<boolean>(true);
-  const [xp, setXp] = useState<number>(0); // Total xp gained from completing the lesosn.
+  const [xp, setXp] = useState<number>(0); // Total xp gained from completing the lesson.
   const { status, handleCompleteLesson } = useContext(StatusContext); 
+
 
   const accuracy = correctAnswers/attempts; // Used to compute total xp learned from lesson ( accuracy * base xp).
   const winSFX = new Audio(Win);
   const navigate = useNavigate();
   
-  winSFX.play();
-
   useEffect( () => {
-    handleCompleteLesson(lessonId, accuracy, setXp, setLoading)
+    handleCompleteLesson(practice, practice ? -1 : lessonId, accuracy, setXp, setLoading, winSFX);
   }, []);
 
   return (
-    <div className='w-screen h-screen bg-white flex flex-col justify-center items-center text-slate-800 font-bold text-2xl pb-14'> 
+    <div className='relative w-screen h-screen bg-white flex flex-col justify-center items-center text-slate-800 font-bold text-2xl pb-14'> 
     { loading && 
-      <div className='w-full h-full bg-white flex items-center justify-center'>
+      <div className='absolute inset-0 w-full h-full bg-white flex items-center justify-center'>
         <MoonLoader loading={loading} size={window.innerHeight /2} color='#22c55e'/>
       </div>
     }
