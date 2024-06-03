@@ -151,17 +151,19 @@ class User(AbstractBaseUser, PermissionsMixin):
             'hearts' : self.hearts,
             'xp' : self.xp,
             'available_xp' : self.available_xp,
+            'on_streak': self.on_streak,
+            'current_streak': self.current_streak if self.on_streak else 0,
             'active_course' : self.active_course.serialize(request.user, current_lesson, request) if self.active_course else None,
             'enrolled_courses' : [course.profile_serialize(request) for course in self.enrolled_courses.all()],
             'is_premium' : self.is_premium
         }
 
 
-    def leaderboard_serialize(self, accum_xp):
+    def leaderboard_serialize(self):
         return {
             'id' : self.id,
             'username' : self.username,
-            'xp' : accum_xp if accum_xp else self.xp
+            'total_xp' : self.xp
         }
 
 
@@ -352,6 +354,13 @@ class Session(models.Model):
     def __str__(self):
         return f'{self.id}. {self.user.id}-{self.lesson.id} ({self.timestamp})'
 
+
+    def leaderboard_serialize(self, total_xp):
+        return {
+            'user_id' : self.user.id,
+            'username' : self.user.username,
+            'total_xp' : total_xp 
+        }
 
 class Word(models.Model):
     """Represents a word in a language"""

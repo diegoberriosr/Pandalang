@@ -32,6 +32,8 @@ type Status = {
     hearts : number,
     xp : number,
     available_xp : number,
+    on_streak : boolean,
+    current_streak : number,
     is_premium : boolean
     active_course  ? : Course,
     courses : ProfileCourse[] 

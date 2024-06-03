@@ -349,7 +349,7 @@ def get_leaderboard_scores(request):
     # Otherwise, get the current week's top 10 users by earned xp
     last_sunday = get_last_sunday()
     next_sunday = get_next_sunday()
-    profiles = Session.objects.filter(timestamp__range=(last_sunday, next_sunday)).annotate(total_xp=Sum('earned_xp'))[:10]
+    profiles = Session.objects.filter(timestamp__range=(last_sunday, next_sunday)).values('user').annotate(total_xp=Sum('earned_xp'))[:10]
     
     profile_data = [profile.leaderboard_serialize(profile.total_xp) for profile in profiles]
 
